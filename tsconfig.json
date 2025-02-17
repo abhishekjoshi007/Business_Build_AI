@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/app/components/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/(app)/layout.jsx",
+    "src/app/(app)/history/page.tsx",
+    "src/app/lib/chatbot.js",
+    "src/app/(marketing)/pricing/page.js",
+    "src/app/(app)/billing/page.js",
+    "src/app/api/change-plan/route.js",
+    "src/app/(app)/billing/CheckoutButton.jsx",
+    "src/app/api/subscribe/route.js",
+    "src/app/lib/langchain.js",
+    "src/app/api/contacts/route.js",
+    "src/app/api/conversation/save-completion/route.js",
+    "src/app/lib/zapier.js",
+    "src/app/components/app/ListZapierActions.jsx",
+    "src/app/(marketing)/page.jsx",
+    "src/app/lib/limits.js",
+    "src/app/components/marketing/Footer.jsx",
+    "src/app/api/generateUploadUrl/route.js",
+    "src/app/components/app/FileDetails.jsx",
+    "src/app/components/ui/ResetPasswordModal.jsx"
+  ],
+  "exclude": ["node_modules"]
+}
