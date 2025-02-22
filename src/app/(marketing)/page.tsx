@@ -28,16 +28,7 @@ export default async function Page() {
           </div>
         )}
       </div>
-      <iframe
-        className="mx-auto border rounded-md max-w-md aspect-video"
-        width="100%"
-        // height="315"
-        src="https://www.youtube.com/embed/fxj5PWgWMWU?controls=0"
-        title=""
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
-        allowFullScreen
-      ></iframe>
+      
       {session ? (
         <div className="space-y-3">
           <Link
