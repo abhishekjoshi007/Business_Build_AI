@@ -11,7 +11,6 @@ export default function SigninForm() {
   const router = useRouter()
 
   const [working, isWorking] = useState<boolean>(false)
-
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 

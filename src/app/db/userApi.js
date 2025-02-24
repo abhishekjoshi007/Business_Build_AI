@@ -11,6 +11,7 @@ export const users = {
   create,
   update,
   delete: _delete,
+  googleauth
 };
 
 const dbName = process.env.MONGODB_DB;
@@ -95,6 +96,36 @@ async function create(params) {
     throw new Error(error);
   }
 }
+async function googleauth(params) {
+  const client = await clientPromise;
+  const userCollection = client.db(dbName).collection("users");
+
+  // validate
+  const userExists = await userCollection.findOne({ email: params.email });
+  if (userExists) {
+    throw new Error('Email "' + params.email + '" is already taken');
+  }
+
+  try {
+    const data = await userCollection.insertOne({
+      name: params.name,
+      email: params.email,
+      role: params.email === "kitchenbeats@gmail.com" ? "admin" : "user",
+      model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
+    });
+    return {
+      _id: data.insertedId,
+      name: params.name,
+      email: params.email,
+      role: params.email === "kitchenbeats@gmail.com" ? "admin" : "user",
+      model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
+    };
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw new Error(error);
+  }
+}
+
 
 async function update(id, params) {
   const client = await clientPromise;

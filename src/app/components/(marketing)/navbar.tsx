@@ -1,10 +1,9 @@
 'use client'
-
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { IconAlien, IconMenu, IconX } from '@tabler/icons-react'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 const navigation = [
   { name: 'Home', href: '/', current: true },
@@ -16,7 +15,18 @@ function classNames(...classes: any) {
 
 export default function NavBar() {
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const router = useRouter()
 
+  const handleGoogleSignIn = async () => {
+    if (session) {
+      console.log(session)
+      router.push('/dashboard')
+      return
+    }
+    const resp = await signIn('google')
+    console.log(resp)
+  }
   return (
     <Disclosure as="nav" className="bg-black">
       {({ open }) => (
@@ -68,6 +78,9 @@ export default function NavBar() {
                   Register
                 </Link>
                 <button className='hover:text-gray-200' onClick={() => signIn()}>Sign In</button>
+                <button className='ml-3 rounded-md px-3 py-1 font-medium bg-red-500 text-white hover:bg-red-600' onClick={handleGoogleSignIn}>
+                  Sign In with Google
+                </button>
               </div>
             </div>
           </div>

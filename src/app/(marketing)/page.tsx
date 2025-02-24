@@ -27,7 +27,7 @@ export default async function Page() {
             </div>
           </div>
         )}
-      </div>
+      </div>  
       
       {session ? (
         <div className="space-y-3">
