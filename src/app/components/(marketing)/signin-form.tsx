@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
+import GoogleAuthButton from './GoogleAuthButton'
 
 export default function SigninForm() {
   const router = useRouter()
@@ -140,6 +141,7 @@ export default function SigninForm() {
           >
             Sign in
           </button>
+          <GoogleAuthButton/>
         </div>
       </form>
     </div>

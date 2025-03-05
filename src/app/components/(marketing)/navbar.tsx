@@ -46,8 +46,11 @@ export default function NavBar() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <IconAlien className="w-8 h-8 text-purple-500" />
-                </div>
+                <img
+                    src="/logo.png"
+                    alt="Workflow"
+                    className="h-8 w-auto"
+                  />                </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
@@ -78,9 +81,7 @@ export default function NavBar() {
                   Register
                 </Link>
                 <button className='hover:text-gray-200' onClick={() => signIn()}>Sign In</button>
-                <button className='ml-3 rounded-md px-3 py-1 font-medium bg-red-500 text-white hover:bg-red-600' onClick={handleGoogleSignIn}>
-                  Sign In with Google
-                </button>
+              
               </div>
             </div>
           </div>

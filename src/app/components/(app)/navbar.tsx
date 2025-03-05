@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: false },
+  { name: 'Home', href: '/home', current: false },
   { name: 'Sites', href: '/sites', current: false },
 ]
 
@@ -38,7 +38,12 @@ export default function NavBar() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <IconAlien className="w-8 h-8 text-purple-500" />
+                  {/* <IconAlien className="w-8 h-8 text-purple-500" /> */}
+                  <img
+                    src="/logo.png"
+                    alt="Workflow"
+                    className="h-8 w-auto"
+                  />
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">

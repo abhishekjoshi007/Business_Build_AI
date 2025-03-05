@@ -13,91 +13,104 @@ import { chatbotSystemPrompt } from "@/app/config/chat"
 export const runtime = "edge";
 
 export async function POST(req) {
+  const user = await getToken({req});
+  console.log("User token fetched", user);
+  const token = await getToken({req, raw:true});
+  console.log("Raw token fetched", token);
 
-    const user = await getToken({req});
-    const token = await getToken({req, raw:true});
+  if (!user || !user?._id) {
+      console.log("User is required but not found");
+      return NextResponse.json({message: "Unauthorized. User is required"}, { status: 403 });
+  }
 
-    if (!user || !user?._id) {
-        console.log("User is required");
-        return NextResponse.json({message: "Unauthorized. User is required"}, { status: 403 });
-    }
+  console.log("Initializing memory buffer");
+  const memory = new BufferWindowMemory({
+      returnMessages: true,
+      memoryKey: "chat_history",
+      inputKey: "input",
+      outputKey: "output",
+      k: 6,
+  });
 
-    //input and output kets must be set to this
-    const memory = new BufferWindowMemory({
-        returnMessages: true,
-        memoryKey: "chat_history",
-        inputKey: "input",
-        outputKey: "output",
-        k: 6,
-    });
+  const { messages, prompt, conversationUUID, test } = await req.json();
+  console.log("Request body parsed", { messages, prompt, conversationUUID, test });
 
-    const { messages, prompt, conversationUUID, test } = await req.json();
+  console.log("Formatting messages");
+  const formattedMessages = messages.map((message) => {
+      if (message.role === "user") {
+          console.log("User message formatted", message.content);
+          return new HumanMessage(message.content);
+      } else if (message.role === "assistant") {
+          console.log("Assistant message formatted", message.content);
+          return new AIMessage(message.content);
+      }
+      console.log("Base message formatted", message.content);
+      return new BaseMessage(message.content);
+  });
 
-    const formattedMessages = messages.map((message) => {
-        if (message.role === "user") {
-        return new HumanMessage(message.content);
-        } else if (message.role === "assistant") {
-        return new AIMessage(message.content);
-        }
-        return new BaseMessage(message.content);
-    });
+  console.log("Creating chat history");
+  const chatHistory = new ChatMessageHistory(formattedMessages);
+  memory.chatHistory = chatHistory;
 
-    const chatHistory = new ChatMessageHistory(formattedMessages);
-
-    memory.chatHistory = chatHistory;
-
-    let tools;
-    try {
+  let tools;
+  try {
+      console.log("Fetching tools for user", user?._id);
       tools = await llmTools(user?._id);
-    } catch (error) {
+      console.log("Tools fetched successfully", tools);
+  } catch (error) {
       console.log("Error Fetching Tools: ", error);
       return new Response(`Error Fetching Tools: ${error.message}`, { status: 500 });
-    }
+  }
 
   try {
-    const model = new ChatOpenAI({
-      modelName: "gpt-4-0613",
-      streaming: true,
-      //maxTokens: 500,
-      openAIApiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const executor = await initializeAgentExecutorWithOptions(tools, model, {
-      memory,
-      agentType: "openai-functions",
-      returnIntermediateSteps: true,
-      agentArgs: {
-        prefix: chatbotSystemPrompt,
-      },
-    });
-
-    if(test === false || typeof test === 'undefined'){
-      //save user message
-      await handleSaveOutput({
-        conversationUUID,
-        role: "user",
-        content: prompt,
-        token,
-        userId: user._id
+      console.log("Initializing ChatOpenAI model");
+      const model = new ChatOpenAI({
+          modelName: "gpt-4-0613",
+          streaming: true,
+          openAIApiKey: process.env.OPENAI_API_KEY,
       });
-    }
 
-    // My own LangChainStream implementation
-    const { stream, handlers } = LangChainStream({
-      ...((test === false || typeof test === 'undefined') ? { handleSaveOutput } : {}),
-      token,
-      conversationUUID,
-      userId: user._id
-    });
+      console.log("Initializing agent executor with options");
+      const executor = await initializeAgentExecutorWithOptions(tools, model, {
+          memory,
+          agentType: "openai-functions",
+          returnIntermediateSteps: true,
+          agentArgs: {
+              prefix: chatbotSystemPrompt,
+          },
+      });
 
-    executor.call({ input: prompt, verbose: true }, [handlers]).catch(console.error);
+      if(test === false || typeof test === 'undefined'){
+          console.log("Saving user message");
+          await handleSaveOutput({
+              conversationUUID,
+              role: "user",
+              content: prompt,
+              token,
+              userId: user._id
+          });
+          console.log("User message saved");
+      }
 
-    return new StreamingTextResponse(stream);
+      console.log("Setting up LangChain stream");
+      const { stream, handlers } = LangChainStream({
+          ...((test === false || typeof test === 'undefined') ? { handleSaveOutput } : {}),
+          token,
+          conversationUUID,
+          userId: user._id
+      });
+
+      console.log("Calling executor");
+      executor.call({ input: prompt, verbose: true }, [handlers]).catch(console.error);
+
+      console.log("Returning streaming response");
+      return new StreamingTextResponse(stream);
   } catch (error) {
-    console.log("Chat Stream Error: ", error);
-    return NextResponse.json({message:`Chat Stream Error: ${error.message}`}, { status: 500 });
+      console.log("Chat Stream Error: ", error);
+      return NextResponse.json({message:`Chat Stream Error: ${error.message}`}, { status: 500 });
   }
 }
+
 
 async function handleSaveOutput({ conversationUUID, role, content, token, userId }) {
   const res = await fetch(`${env.NEXT_PUBLIC_APP_URL}/api/conversation`, {

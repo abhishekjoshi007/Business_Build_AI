@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
+import GoogleAuthButton from './GoogleAuthButton'
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -48,7 +49,7 @@ export default function RegisterForm() {
       toast.error(body)
     }
 
-    router.push('/dashboard')
+    router.push('/home')
   }
 
   return (
@@ -138,7 +139,7 @@ export default function RegisterForm() {
             />
           </div>
         </div>
-
+   
         <div>
           <button
             type="submit"
@@ -148,6 +149,7 @@ export default function RegisterForm() {
             Sign in
           </button>
         </div>
+        <GoogleAuthButton/>
       </form>
     </div>
   )

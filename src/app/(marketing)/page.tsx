@@ -32,7 +32,7 @@ export default async function Page() {
       {session ? (
         <div className="space-y-3">
           <Link
-            href="/dashboard"
+            href="/home"
             className="mx-auto border rounded py-2 flex w-52 items-center justify-center"
           >
             Get Started
