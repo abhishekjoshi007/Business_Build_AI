@@ -9,7 +9,6 @@ interface ImagePrompt {
 }
 
 export async function createImages(imagePrompts: ImagePrompt[] = []) {
-
   try {
 
     const imagePromises = imagePrompts.flatMap(
@@ -54,11 +53,12 @@ export async function createImages(imagePrompts: ImagePrompt[] = []) {
         }
       }),
     )
-
+    console.log("images generated successfully")
     return images; // return the object of image prompts and URLs
   } catch (error) {
     console.error('Error generating images:', error)
     if (error instanceof Error) {
+      console.log(error)
       throw error
     } else {
       throw new Error(JSON.stringify(error))

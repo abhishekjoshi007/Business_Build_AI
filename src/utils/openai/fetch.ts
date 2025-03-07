@@ -43,7 +43,7 @@ export async function fetchOpenAi(
       stream: true,
     }),
   })
-
+  console.log("open ai response: " , res)
   if (res.status !== 200) {
     const result = await res.json()
     console.log('error in fetchOpenAi: ', result)

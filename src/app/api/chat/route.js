@@ -56,7 +56,6 @@ export async function POST(req) {
   try {
       console.log("Fetching tools for user", user?._id);
       tools = await llmTools(user?._id);
-      console.log("Tools fetched successfully", tools);
   } catch (error) {
       console.log("Error Fetching Tools: ", error);
       return new Response(`Error Fetching Tools: ${error.message}`, { status: 500 });

@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
         width: '720',
       },
     ]);
-    console.log('Images created successfully:', images);
+    console.log('Images created successfully:');
   } catch (error) {
     console.error('Generated image files error:', error);
 

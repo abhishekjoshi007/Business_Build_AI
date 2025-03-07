@@ -116,7 +116,6 @@ export const authOptions: NextAuthOptions = {
               session.user.customerId = stripeCustomer.id;
             }
           } catch (error) {
-            console.error("failed to add customer", token);
           }
         }
         return session;
