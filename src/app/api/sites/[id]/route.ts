@@ -150,13 +150,13 @@ export async function PATCH(
     //if we have a domain assume we have ssl
     if(domain) {
       hasSSL = true;
-      siteData.featureImageURL = `https://${domain}/featureImage-0.png?${timestamp}`
-      siteData.aboutUsImageURL = `https://${domain}/aboutUsImage-0.png?${timestamp}`
-      siteData.testimonialImageURL = `https://${domain}/testimonialImage-0.png?${timestamp}`
+      siteData.featureImageURL = `https://${domain}/featureImage-0?${timestamp}`
+      siteData.aboutUsImageURL = `https://${domain}/aboutUsImage-0?${timestamp}`
+      siteData.testimonialImageURL = `https://${domain}/testimonialImage-0?${timestamp}`
     } else {
-      siteData.featureImageURL = `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com/featureImage-0.png?${timestamp}`
-      siteData.aboutUsImageURL = `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com/aboutUsImage-0.png?${timestamp}`
-      siteData.testimonialImageURL = `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com/testimonialImage-0.png?${timestamp}`
+      siteData.featureImageURL = `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com/featureImage-0?${timestamp}`
+      siteData.aboutUsImageURL = `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com/aboutUsImage-0?${timestamp}`
+      siteData.testimonialImageURL = `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com/testimonialImage-0?${timestamp}`
     }
 
     if(domain && (domain !== oldBucketName && domain !== oldDomain) ){
@@ -180,9 +180,9 @@ export async function PATCH(
         await uploadImagesToS3(images, domain)
 
         //we are now using a domain with ssl, change the image urls
-        siteData.featureImageURL = `https://${domain}/featureImage-0.png?${timestamp}`
-        siteData.aboutUsImageURL = `https://${domain}/aboutUsImage-0.png?${timestamp}`
-        siteData.testimonialImageURL = `https://${domain}/testimonialImage-0.png?${timestamp}`
+        siteData.featureImageURL = `https://${domain}/featureImage-0?${timestamp}`
+        siteData.aboutUsImageURL = `https://${domain}/aboutUsImage-0?${timestamp}`
+        siteData.testimonialImageURL = `https://${domain}/testimonialImage-0?${timestamp}`
 
         //create html, and mark isSSL true since we have a domain
         const { html } = await generateHTML(siteData, domain, hasSSL)

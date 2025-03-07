@@ -189,7 +189,45 @@ export default function SiteForm({ id }: SiteProps) {
       console.error('generateNewFeatureImage Error: ', error)
     }
   }
-
+  async function handleFileUpload(file: File, field: string) {
+    try {
+      setIsGeneratingImage(true); // Use the same loading state for consistency
+      console.log("field" , field)
+      // Create FormData and append the file and other fields
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('field', field); // Pass the field name (e.g., 'featureImage', 'aboutUsImage', 'testimonialImage')
+      formData.append('siteId', id); // Assuming `id` is the site ID
+  
+      // Send the request to the upload API endpoint
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData, // Use FormData instead of JSON
+      });
+  
+      const response = await res.json();
+  
+      if (!res.ok) {
+        toast.error(response.error); // Show error toast if the request fails
+        console.error(response);
+      } else {
+        // Update the site data with the new image URL
+        if (response.image.value) {
+          setSiteData((prevData) => ({
+            ...prevData,
+            [response.image.key]: response.image.value, // Dynamically update the correct field
+          }));
+        }
+        toast.success(response.message); // Show success toast
+      }
+  
+      setIsGeneratingImage(false); // Reset loading state
+    } catch (error) {
+      setIsGeneratingImage(false); // Reset loading state on error
+      console.error('uploadNewImage Error: ', error);
+      toast.error('An error occurred while uploading the image.'); // Show generic error toast
+    }
+  }
   if (!siteData) return
 
   return (
@@ -405,51 +443,76 @@ export default function SiteForm({ id }: SiteProps) {
               </div>
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10">
                 {siteData.aboutUsImageURL ? (
-                  <div>
-                    {/* <button disabled={isGeneratingImage} className='disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white rounded-md mb-4' onClick={()=>generateNewImage('dalle','aboutUsImage',siteData.aboutUsImagePrompt, '576', '1024')}>Generate Image with Dalle</button> */}
-                    <button
-                      disabled={isGeneratingImage}
-                      className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md mb-4"
-                      onClick={() =>
-                        generateNewImage(
-                          'stable',
-                          'aboutUsImage',
-                          siteData.aboutUsImagePrompt,
-                          '576',
-                          '1024',
-                        )
+               <div>
+               {/* Button Section */}
+               <div className="flex items-center gap-4 mb-4">
+                 {/* Generate Image Button */}
+                 <button
+                   disabled={isGeneratingImage}
+                   className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md"
+                   onClick={() =>
+                     generateNewImage(
+                       'stable',
+                       'aboutUsImage',
+                       siteData.aboutUsImagePrompt,
+                       '576',
+                       '1024',
+                     )
+                   }
+                 >
+                   Generate Image <IconRefresh className="w-5 h-5" />
+                 </button>
+             
+                 {/* Upload Button */}
+                 <label
+                   htmlFor="file-upload"
+                   className="cursor-pointer px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
+                 >
+                   Upload Image
+                   <input
+                     id="file-upload"
+                     name="file-upload"
+                     type="file"
+                     className="sr-only"
+                     onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        handleFileUpload(file, 'aboutUsImage'); // Call the upload function
                       }
-                    >
-                      Generate Image <IconRefresh className="w-5 h-5" />{' '}
-                    </button>
-                    <img
-                      className="rounded-md max-h-[512px]"
-                      src={siteData.aboutUsImageURL}
-                    />
-                  </div>
-                ) : (
+                    }}                   />
+                 </label>
+               </div>
+             
+               {/* Display Generated Image */}
+               {siteData.aboutUsImageURL && (
+                 <div className="mb-4">
+                   <img
+                     className="rounded-md max-h-[512px]"
+                     src={siteData.aboutUsImageURL}
+                     alt="Generated About Us"
+                   />
+                 </div>
+               )}
+             
+               {/* Drag and Drop Section */}
+               <div className="text-center">
+                 <IconPhotoAi
+                   className="mx-auto h-12 w-12 text-gray-500"
+                   aria-hidden="true"
+                 />
+                 <div className="mt-4 flex text-sm leading-6 text-gray-400">
+                   <p className="pl-1">or drag and drop</p>
+                 </div>
+                 <p className="text-xs leading-5 text-gray-400">
+                   PNG, JPG, GIF up to 10MB
+                 </p>
+               </div>
+             </div>
+                ):(
                   <div className="text-center">
-                    <IconPhotoAi
-                      className="mx-auto h-12 w-12 text-gray-500"
-                      aria-hidden="true"
-                    />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-400">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-gray-900 font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-400">
-                      PNG, JPG, GIF up to 10MB
+                    <IconPhotoAi className="mx-auto h-12 w-12 text-gray-500" aria-hidden="true" />
+                    <p className="mt-4 text-sm leading-6 text-gray-400">
+                      No image uploaded yet.
                     </p>
                   </div>
                 )}
@@ -551,51 +614,76 @@ export default function SiteForm({ id }: SiteProps) {
               </div>
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 p-6">
                 {siteData.featureImageURL ? (
-                  <div>
-                    {/* <button disabled={isGeneratingImage} className='disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white rounded-md mb-4' onClick={()=>generateNewImage('dalle','featureImage',siteData.featureImagePrompt, '512', '512')}>Generate Image with Dalle</button> */}
-                    <button
-                      disabled={isGeneratingImage}
-                      className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md mb-4"
-                      onClick={() =>
-                        generateNewImage(
-                          'stable',
-                          'featureImage',
-                          siteData.featureImagePrompt,
-                          '720',
-                          '720',
-                        )
-                      }
-                    >
-                      Generate Image <IconRefresh className="w-5 h-5" />{' '}
-                    </button>
-                    <img
-                      className="rounded-md max-w-[512px] aspect-auto w-full"
-                      src={siteData.featureImageURL}
-                    />
-                  </div>
+                 <div>
+                 {/* Button Section */}
+                 <div className="flex items-center gap-4 mb-4">
+                   {/* Generate Image Button */}
+                   <button
+                     disabled={isGeneratingImage}
+                     className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md"
+                     onClick={() =>
+                       generateNewImage(
+                         'stable',
+                         'featureImage',
+                         siteData.featureImagePrompt,
+                         '720',
+                         '720',
+                       )
+                     }
+                   >
+                     Generate Image <IconRefresh className="w-5 h-5" />
+                   </button>
+               
+                   {/* Upload Button */}
+                   <label
+                     htmlFor="file-upload-feature"
+                     className="cursor-pointer px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
+                   >
+                     Upload Image
+                     <input
+                       id="file-upload-feature"
+                       name="file-upload"
+                       type="file"
+                       className="sr-only"
+                       onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleFileUpload(file, 'featureImage'); // Call the upload function
+                        }
+                      }}                            />
+                   </label>
+                 </div>
+               
+                 {/* Display Generated or Uploaded Image */}
+                 {siteData.featureImageURL && (
+                   <div className="mb-4">
+                     <img
+                       className="rounded-md max-w-[512px] aspect-auto w-full"
+                       src={siteData.featureImageURL}
+                       alt="Feature Image"
+                     />
+                   </div>
+                 )}
+               
+                 {/* Drag and Drop Section */}
+                 <div className="text-center">
+                   <IconPhotoAi
+                     className="mx-auto h-12 w-12 text-gray-500"
+                     aria-hidden="true"
+                   />
+                   <div className="mt-4 flex text-sm leading-6 text-gray-400">
+                     <p className="pl-1">or drag and drop</p>
+                   </div>
+                   <p className="text-xs leading-5 text-gray-400">
+                     PNG, JPG, GIF up to 10MB
+                   </p>
+                 </div>
+               </div>
                 ) : (
                   <div className="text-center">
-                    <IconPhotoAi
-                      className="mx-auto h-12 w-12 text-gray-500"
-                      aria-hidden="true"
-                    />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-400">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-gray-900 font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-400">
-                      PNG, JPG, GIF up to 10MB
+                    <IconPhotoAi className="mx-auto h-12 w-12 text-gray-500" aria-hidden="true" />
+                    <p className="mt-4 text-sm leading-6 text-gray-400">
+                      No image uploaded yet.
                     </p>
                   </div>
                 )}
@@ -724,51 +812,76 @@ export default function SiteForm({ id }: SiteProps) {
               </div>
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10">
                 {siteData.testimonialImageURL ? (
-                  <div>
-                    {/* <button disabled={isGeneratingImage} className='disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white rounded-md mb-4' onClick={()=>generateNewImage('dalle','testimonialImage',siteData.testimonialImage, '512', '512')}>Generate Image with Dalle</button> */}
-                    <button
-                      disabled={isGeneratingImage}
-                      className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md mb-4"
-                      onClick={() =>
-                        generateNewImage(
-                          'stable',
-                          'testimonialImage',
-                          siteData.testimonialImagePrompt,
-                          '512',
-                          '512',
-                        )
-                      }
-                    >
-                      Generate Image <IconRefresh className="w-5 h-5" />{' '}
-                    </button>
-                    <img
-                      className="rounded-md  w-[350px] h-[350px] max-w-full object-cover"
-                      src={siteData.testimonialImageURL}
-                    />
-                  </div>
+                                      <div>
+                      {/* Button Section */}
+                      <div className="flex items-center gap-4 mb-4">
+                        {/* Generate Image Button */}
+                        <button
+                          disabled={isGeneratingImage}
+                          className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md"
+                          onClick={() =>
+                            generateNewImage(
+                              'stable',
+                              'testimonialImage',
+                              siteData.testimonialImagePrompt,
+                              '512',
+                              '512',
+                            )
+                          }
+                        >
+                          Generate Image <IconRefresh className="w-5 h-5" />
+                        </button>
+
+                        {/* Upload Button */}
+                        <label
+                          htmlFor="file-upload-testimonal"
+                          className="cursor-pointer px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
+                        >
+                          Upload Image
+                          <input
+                            id="file-upload-testimonal"
+                            name="file-upload"
+                            type="file"
+                            className="sr-only"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleFileUpload(file, 'testimonialImage'); // Call the upload function
+                              }
+                            }}                                 />
+                        </label>
+                      </div>
+
+                      {/* Display Generated or Uploaded Image */}
+                      {siteData.testimonialImageURL && (
+                        <div className="mb-4">
+                          <img
+                            className="rounded-md w-[350px] h-[350px] max-w-full object-cover"
+                            src={siteData.testimonialImageURL}
+                            alt="Testimonial Image"
+                          />
+                        </div>
+                      )}
+
+                      {/* Drag and Drop Section */}
+                      <div className="text-center">
+                        <IconPhotoAi
+                          className="mx-auto h-12 w-12 text-gray-500"
+                          aria-hidden="true"
+                        />
+                        <div className="mt-4 flex text-sm leading-6 text-gray-400">
+                          <p className="pl-1">or drag and drop</p>
+                        </div>
+                        <p className="text-xs leading-5 text-gray-400">
+                          PNG, JPG, GIF up to 10MB
+                        </p>
+                      </div>
+                    </div>
                 ) : (
                   <div className="text-center">
-                    <IconPhotoAi
-                      className="mx-auto h-12 w-12 text-gray-500"
-                      aria-hidden="true"
-                    />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-400">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-gray-900 font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-400">
-                      PNG, JPG, GIF up to 10MB
+                    <IconPhotoAi className="mx-auto h-12 w-12 text-gray-500" aria-hidden="true" />
+                    <p className="mt-4 text-sm leading-6 text-gray-400">
+                      No image uploaded yet.
                     </p>
                   </div>
                 )}
