@@ -249,10 +249,10 @@ export async function POST(req: NextRequest) {
 
     // Return the error so the AI can see it
     if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error }, { status: 500 });
     } else {
       return NextResponse.json(
-        { error: 'An error occurred while saving your site.' },
+        { error: 'An error occurred while saving your site.' , errorMessage: error},
         { status: 500 },
       );
     }

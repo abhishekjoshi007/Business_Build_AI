@@ -102,8 +102,8 @@ export async function createSite(userId) {
         const response = await res.json();
         return `The site was successfully generated. Inform the user. data:${response}`;
       } catch (error) {
-        console.error(`There was an error while generating the site. Error: ${error.message}`)
-        return `There was an error while generating the site. Inform the user. Error: ${error.message}`;
+        console.error(`There was an error while generating the site. Error: ${error}`)
+        return `There was an error while generating the site. Inform the user. Error: ${error}`;
       }
     },
     returnDirect: false, //allows the tool to return the output directly

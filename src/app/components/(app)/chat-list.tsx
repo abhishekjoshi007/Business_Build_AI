@@ -18,13 +18,13 @@ export function ChatList({ messages, isLoading, currentTool }: ChatList) {
   return (
     <div className="relative mx-auto max-w-2xl px-4">
       {messages.length ? (
-          <div className="prose mt-8 w-full text-white dark:prose-invert prose-p:m-0 flex flex-col">
+          <div className="prose mt-8 w-full  text-white dark:prose-invert prose-p:m-0 flex flex-col">
             {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`${
                   msg.role === "assistant" ? "assistant" : "user"
-                } relative overflow-scroll mb-8 w-full`}
+                } relative overflow-scroll overflow-x-hidden mb-8 w-full`}
               >
                 {msg.role === "assistant" && isLoading && messages.length - 1 === index ? (
                   <IconLoader2 size={18} className="absolute right-5 top-5 animate-spin" />
