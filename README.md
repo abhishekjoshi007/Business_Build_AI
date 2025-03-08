@@ -1,6 +1,6 @@
-# Build-a-Site AI
+# Business-Build-AI AI
 
-Build-a-Site AI is an automated website builder that leverages the power of AI to generate content and images for your website. The application uses OpenAI API for content creation and Stable Diffusion AI for image generation. The content is then added to prebuilt section templates and styled using TailwindCSS. The processed content is stored in an AWS S3 bucket which is made public. Users have the option to edit and update the content, and when saved, the site files are updated in the bucket. Users can also add a domain using Cloudflare.
+Business-Build-AI AI is an automated website builder that leverages the power of AI to generate content and images for your website. The application uses OpenAI API for content creation and Stable Diffusion AI for image generation. The content is then added to prebuilt section templates and styled using TailwindCSS. The processed content is stored in an AWS S3 bucket which is made public. Users have the option to edit and update the content, and when saved, the site files are updated in the bucket. Users can also add a domain using Cloudflare.
 
 ## Features
 
@@ -18,22 +18,19 @@ Before you begin, ensure you have met the following requirements:
 - You have installed Node.js and npm
 - You have a basic understanding of JavaScript and Node.js
 
-## Installing Build-a-Site AI
+## Installing Business-Build-AI AI
 
-To install Build-a-Site AI, follow these steps:
+To install Business-Build-AI AI, follow these steps:
 
-1. Clone the repo
-```git clone https://github.com/i-dream-of-ai/build-a-site```
-
-2. Install NPM packages
+1. Install NPM packages
 ```npm install```
 
 
-## Using Build-a-Site AI
+## Using Business-Build-AI AI
 
 This application uses a number of environment variables for configuration. You'll need to set these up to get the application running.
 
-To use Build-a-Site AI, follow these steps:
+To use Business-Build-AI AI, follow these steps:
 
 1. Rename `.env.example` to `.env`.
 
