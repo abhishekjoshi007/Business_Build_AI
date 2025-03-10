@@ -6,6 +6,7 @@ import { generateNavbar } from './navbar'
 import { generateHeroSection } from './hero'
 import { generateContactFormSection } from './contact-form'
 import { generateTestimonialSection } from './testimonial'
+import { generateReviewFormSection } from './review-form'
 import {SiteContent} from '@/old.types/site' 
 export async function generateHTML(props: SiteContent, bucketName: string, hasSSL: boolean) {
   
@@ -82,6 +83,12 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
     sectionTitle:"Contact Us",
     colors :colors
   })
+
+  const reviewFormHTML = generateReviewFormSection({
+    sectionTitle: "Leave a Review",
+    colors: colors
+  })
+
   const footerHTML = generateFooter({ copywrite, colors })
 
   const timestamp = Date.now()
@@ -123,6 +130,7 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
           ${contactUsHTML}
           ${footerHTML}
           ${contactFormHTML}
+          ${reviewFormHTML}
         </body>
       </html>
     `

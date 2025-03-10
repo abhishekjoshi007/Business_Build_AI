@@ -89,14 +89,15 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             customerId: null,
           });
-        } else{
-          console.log("User already exists")
+        } else {
+          console.log("User already exists");
         }
       }
-  
       return true; 
     },
+
     async session({ token, session }) {
+      console.log(token);
       if (token) {
         session.user._id = token._id;
         session.user.name = token.name;
@@ -116,35 +117,37 @@ export const authOptions: NextAuthOptions = {
               session.user.customerId = stripeCustomer.id;
             }
           } catch (error) {
+            // Handle error if necessary
           }
         }
         return session;
       }
       return session;
     },
+
     async jwt({ token, user }) {
-      let dbUser;
+      console.log("user:", user);
+      console.log("token:", token);
 
-      if (user !== undefined) {
-        dbUser = await users.getById(user.id);
-      }
-
-      if (!dbUser) {
-        if (user) {
-          token._id = user?.id;
+      // If the user is available (i.e. during sign in),
+      // look up the database user using the email.
+      if (user) {
+        const dbUser = await users.getByEmail(user.email);
+        if (dbUser) {
+          token._id = dbUser._id.toString();
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+          token.model = dbUser.model;
+          token.customerId = dbUser.customerId;
+          token.openAiKeyAdded = dbUser.openAiKeyAdded;
+          token.role = dbUser.role;
+        } else {
+          // Fallback: set token._id to the user.id from nextauth.
+          token._id = user.id;
         }
-        return token;
       }
 
-      return {
-        _id: dbUser._id.toString(),
-        name: dbUser.name,
-        email: dbUser.email,
-        model: dbUser.model,
-        customerId: dbUser?.customerId,
-        openAiKeyAdded: dbUser?.openAiKeyAdded,
-        role: dbUser?.role,
-      };
+      return token;
     },
   },
 };
