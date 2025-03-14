@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import React from "react";
-import { useTheme } from "next-themes";
 
 const Label = ({
   children,
@@ -11,7 +10,6 @@ const Label = ({
   animateRerendering?: boolean;
   color?: "default" | "pink" | "blue" | "violet" | "cyan" | "orange";
 }) => {
-  const { theme } = useTheme();
 
   return (
     <div
@@ -48,7 +46,6 @@ export const Boundary = ({
   color?: "default" | "pink" | "blue" | "violet" | "cyan" | "orange";
   animateRerendering?: boolean;
 }) => {
-  const { theme } = useTheme();
 
   return (
     <div
