@@ -1,75 +1,56 @@
 interface ReviewFormSectionProps {
-    sectionTitle: string;
-    colors: {
-      mainTextColor: string;
-      secondaryTextColor: string;
-      mainBackgroundColor: string;
-      secondaryBackgroundColor: string;
-    };
-  }
-  
-  export function generateReviewFormSection({
-    sectionTitle,
-    colors,
-  }: ReviewFormSectionProps): string {
-    const BaseUrl = process.env.NEXTAUTH_URL; // Use server-side environment variable
-    return `
-      <section class="overflow-hidden bg-white py-24 sm:py-32" id="review">
-        <div class="mx-auto max-w-6xl md:px-6 lg:px-8">
-          <div class="text-center">
-            <h2 class="text-base font-semibold leading-7 ${colors.mainTextColor}">${sectionTitle}</h2>
-          </div>
-          <div class="mt-10 max-w-2xl mx-auto">
-            <form class="grid grid-cols-1 gap-y-6" onsubmit="handleReviewSubmit(event)">
-              <div>
-                <input type="text" id="reviewer" placeholder="Your name" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+  sectionTitle: string;
+  colors: {
+    mainTextColor: string;
+    secondaryTextColor: string;
+    mainBackgroundColor: string;
+    secondaryBackgroundColor: string;
+  };
+}
+
+export function generateReviewSection({
+  sectionTitle,
+  colors,
+}: ReviewFormSectionProps): string {
+  const reviews = [
+    { name: "Alice", rating: 5, review: "This product exceeded my expectations! Highly recommend." },
+    { name: "Bob", rating: 4, review: "Good quality and fast delivery. Could improve the packaging." },
+    { name: "Charlie", rating: 3, review: "Average experience. The product is decent but there is room for improvement." },
+  ];
+
+  return `
+    <section class="py-16 bg-gray-50" id="review">
+      <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-center text-3xl font-bold ${colors.mainTextColor} mb-12">${sectionTitle}</h2>
+        <div class="space-y-8">
+          ${reviews
+            .map(review => `
+              <div class="bg-white shadow-md rounded-lg p-6">
+                <div class="flex items-center mb-4">
+                  <span class="text-xl font-semibold ${colors.secondaryTextColor}">${review.name}</span>
+                  <div class="ml-auto flex space-x-1">
+                    ${Array.from({ length: review.rating })
+                      .map(() => `
+                        <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z"/>
+                        </svg>
+                      `)
+                      .join('')}
+                    ${Array.from({ length: 5 - review.rating })
+                      .map(() => `
+                        <svg class="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z"/>
+                        </svg>
+                      `)
+                      .join('')}
+                  </div>
+                </div>
+                <p class="text-gray-600">${review.review}</p>
               </div>
-              <div>
-                <textarea id="review" rows="4" placeholder="Write your review here" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-              </div>
-              <div>
-                <button type="submit" class="w-full px-6 py-3 text-white font-semibold rounded-lg shadow-md ${colors.mainBackgroundColor} hover:${colors.secondaryBackgroundColor}">
-                  Submit Review
-                </button>
-              </div>
-            </form>
-          </div>
+            `)
+            .join('')}
         </div>
-      </section>
-    
-      <script>
-        async function handleReviewSubmit(event) {
-          event.preventDefault();
-          // Extract the id on the client side from the URL
-          const url = window.location.href;
-          const id = url.split('/')[2].split('.')[0].split('-')[1];
-    
-          const reviewData = {
-            id: id,
-            reviewer: document.getElementById('reviewer').value,
-            review: document.getElementById('review').value
-          };
-    
-          // Make the base URL available on the client side
-          const baseUrl = "${BaseUrl}";
-    
-          try {
-            const response = await fetch(\`\${baseUrl}/api/review/\`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(reviewData)
-            });
-    
-            if (response.ok) {
-              alert('Review submitted successfully!');
-            } else {
-              alert('Failed to submit review');
-            }
-          } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred');
-          }
-        }
-      </script>
-    `;
-  }
+      </div>
+    </section>
+  `;
+}

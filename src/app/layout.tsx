@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import { Metadata } from 'next'
 import { NextAuthProvider, RQProvider } from './providers'
 import { Toaster } from 'react-hot-toast'
+import { ThemeProvider } from 'next-themes'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || ''),
@@ -28,16 +29,18 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="[color-scheme:dark] w-full">
+    <html lang="en" className="w-full">
       <body className="bg-gray-1100 overflow-y-scroll bg-[url('/grid.svg')] pb-36 w-full">
-        <Toaster />
-        <NextAuthProvider>
-          <RQProvider>
-            <div className="">
-              {children}
-            </div>
-          </RQProvider>
-        </NextAuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <Toaster />
+          <NextAuthProvider>
+            <RQProvider>
+              <div className="">
+                {children}
+              </div>
+            </RQProvider>
+          </NextAuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

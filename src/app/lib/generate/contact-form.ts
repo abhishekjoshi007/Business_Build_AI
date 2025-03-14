@@ -32,7 +32,7 @@ export function generateContactFormSection({
               <textarea id="message" rows="4" placeholder="Write your message here" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
             </div>
             <div>
-              <button type="submit" class="w-full px-6 py-3 text-white font-semibold rounded-lg shadow-md ${colors.mainBackgroundColor} hover:${colors.secondaryBackgroundColor}">
+              <button type="submit" class="w-full px-6 py-3 text-white font-semibold rounded-lg shadow-md ${colors.secondaryBackgroundColor} hover:${colors.mainBackgroundColor}">
                 Send Message
               </button>
             </div>

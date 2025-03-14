@@ -21,7 +21,7 @@ export async function OPTIONS() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, message } = body;
+    const { id, reviewer, review } = body;
 
     // Find the user by id from your database
     const user = await users.getById(id);
@@ -35,15 +35,15 @@ export async function POST(request: Request) {
     // Send an email to the user's email
     await sendMail({
       to: user.email,
-      subject: `Contact Form Message from ${name}`,
-      text: message,
+      subject: `Review received  from ${reviewer}`,
+      text: review,
     });
 
-    return NextResponse.json({ success: true, message: 'Email sent successfully' });
+    return NextResponse.json({ success: true, review: 'Email sent successfully' });
   } catch (error: any) {
     console.error('Error sending email:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to send email' },
+      { success: false, error: error.review || 'Failed to send email' },
       { status: 500 }
     );
   }

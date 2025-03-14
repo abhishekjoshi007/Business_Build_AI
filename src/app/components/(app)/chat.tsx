@@ -11,7 +11,6 @@ import { useSession } from 'next-auth/react'
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IconAugmentedReality, IconLoader2 } from '@tabler/icons-react'
-
 import { Message } from "@/app/types/chat";
 
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -237,14 +236,14 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                     onChange={(e) => setInput(e.target.value)}
                     autoComplete="off"
                     placeholder="Enter your message here."
-                    className="w-full rounded-md border-0 border-slate-6 p-3 text-gray-600 shadow"
+                    className="w-full rounded-md border-0 border-slate-6 p-3 text-gray-600 shadow bg-brand-light dark:bg-blackPurple-100 dark:text-gray-200"
                   />
                 </div>
 
                 <div className="flex flex-col gap-3">
                   <button
                     type="submit"
-                    className="primary-btn disabled:animate-pulse py-3"
+                    className="primary-btn disabled:animate-pulse py-3 bg-indigo-600 dark:bg-indigo-400 text-white dark:text-gray-900"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -263,10 +262,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             <form className="w-full mx-auto" onSubmit={submitForm}>
               <div className="space-y-12">
                 <div className="border-b border-purple-500/10 pb-12">
-                  <h2 className="text-base font-semibold leading-7 text-neutral-300">
+                  <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-gray-200">
                     Get Started
                   </h2>
-                  <p className="mt-1 text-sm leading-6 text-neutral-400">
+                  <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-300">
                     We just need some basic information about your business. Once your site has been generated, you can edit the content and generate the images using the sites edit form.
                   </p>
 
@@ -274,12 +273,12 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                     <div className="sm:col-span-6">
                       <label
                         htmlFor="title"
-                        className="block text-sm font-medium leading-6 text-neutral-300"
+                        className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
                       >
                         What is your business name?
                       </label>
                       <div className="mt-2">
-                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-600">
+                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 dark:focus-within:ring-indigo-400">
                           <input
                             required
                             type="text"
@@ -288,7 +287,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                             autoComplete="title"
                             value={businessName}
                             onChange={(e) => setBusinessName(e.target.value)}
-                            className="block flex-1 border-0 bg-transparent p-2 text-neutral-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="block flex-1 border-0 bg-transparent p-2 text-gray-900 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-0 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -299,15 +298,15 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                     <div className="sm:col-span-6">
                       <label
                         htmlFor="title"
-                        className="block text-sm font-medium leading-6 text-neutral-300"
+                        className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
                       >
                         What kind of products do you sell?
                       </label>
-                      <p className="mt-1 text-sm leading-6 text-neutral-500">
+                      <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-300">
                         Example: I sell baby cribs.
                       </p>
                       <div className="mt-2">
-                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-600">
+                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 dark:focus-within:ring-indigo-400">
                           <input
                             required
                             type="text"
@@ -316,7 +315,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                             autoComplete="title"
                             value={productType}
                             onChange={(e) => setProductType(e.target.value)}
-                            className="block flex-1 border-0 bg-transparent p-2 text-neutral-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="block flex-1 border-0 bg-transparent p-2 text-gray-900 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-0 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -327,15 +326,15 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                     <div className="sm:col-span-6">
                       <label
                         htmlFor="title"
-                        className="block text-sm font-medium leading-6 text-neutral-300"
+                        className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
                       >
                         Enter some details about the main color you want to use.
                       </label>
-                      <p className="mt-1 text-sm leading-6 text-neutral-500">
+                      <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-300">
                         Example: Use the color blue. Light and soft.
                       </p>
                       <div className="mt-2">
-                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-600">
+                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 dark:focus-within:ring-indigo-400">
                           <input
                             required
                             type="text"
@@ -344,7 +343,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                             autoComplete="title"
                             value={colorType}
                             onChange={(e) => setColorType(e.target.value)}
-                            className="block flex-1 border-0 bg-transparent p-2 text-neutral-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="block flex-1 border-0 bg-transparent p-2 text-gray-900 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-0 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -355,7 +354,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
               <button
                 type="submit"
                 disabled={!businessName || !productType || !colorType || isLoading}
-                className='text-sm md:text-base w-full mt-6 h-11 px-4 rounded-md flex items-center justify-center bg-purple-600 cursor-pointer hover:bg-purple-700 text-white gap-1 hover:animate-none disabled:opacity-50'
+                className='text-sm md:text-base w-full mt-6 h-11 px-4 rounded-md flex items-center justify-center bg-purple-900 dark:bg-purple-600 text-white  gap-1 hover:animate-none disabled:opacity-50'
               >
                 <IconAugmentedReality className="hover:animate-ping" /> 
                 Start Mysterious AI Generator
@@ -365,10 +364,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         )}
       </div>
       <div className={`${isLoading ? "w-full relative":"hidden"}`}>
-          <div className='animate-ufo animate-pulse h-5 mx-auto bg-gradient-to-r from-blue-900 via-purple-800 to-purple-600' />
+          <div className='animate-ufo animate-pulse h-5 mx-auto bg-gradient-to-r from-vercel-blue via-vercel-pink to-vercel-orange' />
       </div>
-
-       
     </>
   )
 }

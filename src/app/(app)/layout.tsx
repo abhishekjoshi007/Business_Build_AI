@@ -15,7 +15,7 @@ export default async function Layout({
     <>
     <NavBar />
     <div className="mx-auto max-w-4xl py-20 px-4 sm:px-6 lg:px-8">
-      <div className='bg-black rounded-lg p-8'>{children}</div>
+      <div className='bg-brand-light dark:bg-black b- rounded-lg p-8'>{children}</div>
     </div>
     </>
   )

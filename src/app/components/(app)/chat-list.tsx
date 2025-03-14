@@ -18,7 +18,7 @@ export function ChatList({ messages, isLoading, currentTool }: ChatList) {
   return (
     <div className="relative mx-auto max-w-2xl px-4">
       {messages.length ? (
-          <div className="prose mt-8 w-full  text-white dark:prose-invert prose-p:m-0 flex flex-col">
+          <div className="prose mt-8 w-full text-gray-900 dark:text-gray-200 dark:prose-invert prose-p:m-0 flex flex-col">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -36,11 +36,10 @@ export function ChatList({ messages, isLoading, currentTool }: ChatList) {
                     {currentTool}
                   </div>
                 )}
-                <div className={`font-semibold p-6 w-full rounded-3xl max-w-lg ${msg.role === "assistant" ? "float-right bg-indigo-500" : "float-left bg-gray-300 text-gray-800"} `}>
+                <div className={`font-semibold p-6 w-full rounded-3xl max-w-lg ${msg.role === "assistant" ? "float-right bg-indigo-500 text-white" : "float-left bg-gray-300 text-gray-800 dark:bg-blackPurple-100 dark:text-gray-200"} `}>
                 <MemoizedReactMarkdown
                   className="flex-1"
                   components={{
-                 
                     table({ children }) {
                       return (
                         <table className="border-collapse border border-black px-3 py-1 dark:border-white">

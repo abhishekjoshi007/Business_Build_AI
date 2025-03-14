@@ -47,7 +47,7 @@ export function SiteList({type = "user"}) {
   }
 
   return (
-    <ul role="list" className="divide-y divide-gray-100">
+    <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-700">
       {sites.map((site) => (
         <li
           key={site._id}
@@ -55,7 +55,7 @@ export function SiteList({type = "user"}) {
         >
           <div className="min-w-0">
             <div className="flex items-start gap-x-3">
-              <p className="text-lg font-semibold leading-6 text-neutral-400">
+              <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-gray-200">
                 {site.content.title}
               </p>
             </div>
@@ -64,7 +64,7 @@ export function SiteList({type = "user"}) {
             
             <Link
               href={`/sites/${site._id}`}
-              className="flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-purple-800 hover:bg-purple-500 gap-1 w-24 justify-center"
+              className="flex items-center rounded-md bg-indigo-600 dark:bg-indigo-400 px-4 py-2 text-sm font-semibold text-white dark:text-gray-900 shadow-sm ring-1 ring-inset ring-indigo-800 dark:ring-indigo-600 hover:bg-indigo-500 dark:hover:bg-indigo-300 gap-1 w-24 justify-center"
             >
               <span>Edit</span> <IconPencil className="h-5 w-5" />{' '}
               <span className="sr-only">, {site.bucketName}</span>
@@ -72,13 +72,13 @@ export function SiteList({type = "user"}) {
             <a
               href={site.href}
               target="_blank"
-              className="flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-purple-800 hover:bg-purple-500 gap-1 w-24 justify-center"
+              className="flex items-center rounded-md bg-indigo-600 dark:bg-indigo-400 px-4 py-2 text-sm font-semibold text-white dark:text-gray-900 shadow-sm ring-1 ring-inset ring-indigo-800 dark:ring-indigo-600 hover:bg-indigo-500 dark:hover:bg-indigo-300 gap-1 w-24 justify-center"
             >
               <span>View</span> <IconExternalLink className="h-5 w-5" />{' '}
               <span className="sr-only">, {site.bucketName}</span>
             </a>
             <Menu as="div" className="relative flex-none">
-              <Menu.Button className="-m-2.5 block p-2.5 text-purple-400 hover:text-purple-700">
+              <Menu.Button className="-m-2.5 block p-2.5 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
                 <span className="sr-only">Open options</span>
                 <IconDotsVertical className="h-5 w-5" aria-hidden="true" />
               </Menu.Button>
@@ -91,14 +91,14 @@ export function SiteList({type = "user"}) {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-28 origin-top-right rounded-md bg-white p-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                <Menu.Items className="absolute right-0 z-10 mt-2 w-28 origin-top-right rounded-md bg-white dark:bg-gray-800 p-2 shadow-lg ring-1 ring-gray-900/5 dark:ring-gray-700 focus:outline-none">
                   <Menu.Item>
                     {({ active }) => (
                       <button
                         type="button"
                         disabled={isDeleting}
                         onClick={() => deleteSite(site._id, site.content.title)}
-                        className="disabled:opacity-40 disabled:cursor-wait rounded-md flex items-center justify-center gap-1 px-2 py-1 text-sm leading-6 text-white bg-red-600 w-full hover:bg-red-500"
+                        className="disabled:opacity-40 disabled:cursor-wait rounded-md flex items-center justify-center gap-1 px-2 py-1 text-sm leading-6 text-white bg-red-600 hover:bg-red-500"
                       >
                         Delete <IconX className="w-5 h-5" />
                         <span className="sr-only">, {site.bucketName}</span>
