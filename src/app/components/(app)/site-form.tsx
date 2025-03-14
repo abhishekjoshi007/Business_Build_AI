@@ -233,27 +233,27 @@ export default function SiteForm({ id }: SiteProps) {
   return (
     <form onSubmit={updateSite}>
       <div className="space-y-12">
-        <div className="border-b border-white/10 pb-12">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
           <div className="flex flex-col-reverse sm:flex-row gap-4 justify-between items-center">
             <div>
-              <h2 className="text-base font-semibold leading-7 text-white">
+              <h2 className="text-base font-semibold leading-7 text-black dark:text-brand-light">
                 Edit Website Content
               </h2>
-              <p className="mt-1 text-sm leading-6 text-gray-400 max-w-md">
+              <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400 max-w-md">
                 Use this form to edit and update your text content and images.
               </p>
             </div>
             <div className='flex items-center gap-2'>
               <Link
                 href='/sites'
-                className="flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-purple-800 hover:bg-purple-500 gap-1 w-32"
+                className="flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold  text-brand-light shadow-sm ring-1 ring-inset ring-purple-800 hover:bg-purple-500 gap-1 w-32"
               >
                 <span>Site List</span>
               </Link>
               <a
                 href={site.href}
                 target="_blank"
-                className="flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-purple-800 hover:bg-purple-500 gap-1 w-32"
+                className="flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold  text-brand-light shadow-sm ring-1 ring-inset ring-purple-800 hover:bg-purple-500 gap-1 w-32"
               >
                 <span>View Site</span> <IconExternalLink className="h-5 w-5" />
               </a>
@@ -265,7 +265,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="title"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Site Title
               </label>
@@ -278,7 +278,7 @@ export default function SiteForm({ id }: SiteProps) {
                     autoComplete="title"
                     value={siteData.title}
                     onChange={(e) => handleFieldChange('title', e.target.value)}
-                    className="flex-1 border-0 bg-transparent p-1.5 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1  border-gray-600 dark:border-gray-500 dark:border-0  bg-transparent p-1.5 text-brand-dark dark:text-brand-light focus:ring-0 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="domain"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Site Domain
               </label>
@@ -299,7 +299,7 @@ export default function SiteForm({ id }: SiteProps) {
                     id="domain"
                     value={site.domain || ''}
                     onChange={(e) => setSite({ ...site, domain: e.target.value })}
-                    className="flex-1 border-0 bg-transparent p-1.5 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-gray-600 dark:border-gray-500 dark:border-0  bg-transparent p-1.5 text-brand-dark dark:text-brand-light focus:ring-0 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -308,11 +308,11 @@ export default function SiteForm({ id }: SiteProps) {
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             Hero Section
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             The top section of the site. This is the first section visitors see.
           </p>
 
@@ -320,7 +320,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="heroTitle"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Hero Header
               </label>
@@ -335,7 +335,7 @@ export default function SiteForm({ id }: SiteProps) {
                     onChange={(e) =>
                       handleFieldChange('heroTitle', e.target.value)
                     }
-                    className="flex-1 border-0 bg-transparent p-1.5 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-gray-600 dark:border-gray-500 dark:border-0  bg-transparent p-1.5 text-brand-dark dark:text-brand-light focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="Welcome"
                   />
                 </div>
@@ -345,7 +345,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="about"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Hero Content
               </label>
@@ -358,18 +358,18 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('heroContent', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             About Us Section
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             A section to tell visitors about your business.
           </p>
 
@@ -377,7 +377,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="aboutus-title"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 About Us Title
               </label>
@@ -391,7 +391,7 @@ export default function SiteForm({ id }: SiteProps) {
                     onChange={(e) =>
                       handleFieldChange('aboutUsTitle', e.target.value)
                     }
-                    className="flex-1 border-0 bg-transparent p-1.5 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-gray-600 dark:border-gray-500 dark:border-0  bg-transparent p-1.5 text-brand-dark dark:text-brand-light focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="About Us"
                   />
                 </div>
@@ -401,7 +401,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="aboutus-content"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 About Us Content
               </label>
@@ -414,10 +414,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('aboutUsContent', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-400">
+              <p className="mt-3 text-sm leading-6 text-black dark:text-gray-400">
                 Write a few sentences about your business.
               </p>
             </div>
@@ -425,7 +425,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="aboutus-image"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 About Us Image Prompt
               </label>
@@ -438,10 +438,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('aboutUsImagePrompt', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10">
+              <div className="mt-2 flex justify-center rounded-lg border text-white dark:border-gray-500 blackorder-blackashed  border-blackhite dark:border-gray-500/25 px-6 py-10">
                 {siteData.aboutUsImageURL ? (
                <div>
                {/* Button Section */}
@@ -449,7 +449,7 @@ export default function SiteForm({ id }: SiteProps) {
                  {/* Generate Image Button */}
                  <button
                    disabled={isGeneratingImage}
-                   className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md"
+                   className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-brand-light flex items-center justify-center gap-1 rounded-md"
                    onClick={() =>
                      generateNewImage(
                        'stable',
@@ -466,7 +466,7 @@ export default function SiteForm({ id }: SiteProps) {
                  {/* Upload Button */}
                  <label
                    htmlFor="file-upload"
-                   className="cursor-pointer px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
+                   className="cursor-pointer px-4 py-2 bg-purple-600 text-brand-light flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
                  >
                    Upload Image
                    <input
@@ -500,10 +500,10 @@ export default function SiteForm({ id }: SiteProps) {
                    className="mx-auto h-12 w-12 text-gray-500"
                    aria-hidden="true"
                  />
-                 <div className="mt-4 flex text-sm leading-6 text-gray-400">
+                 <div className="mt-4 flex text-sm leading-6 text-black dark:text-gray-400">
                    <p className="pl-1">or drag and drop</p>
                  </div>
-                 <p className="text-xs leading-5 text-gray-400">
+                 <p className="text-xs leading-5 text-black dark:text-gray-400">
                    PNG, JPG, GIF up to 10MB
                  </p>
                </div>
@@ -511,7 +511,7 @@ export default function SiteForm({ id }: SiteProps) {
                 ):(
                   <div className="text-center">
                     <IconPhotoAi className="mx-auto h-12 w-12 text-gray-500" aria-hidden="true" />
-                    <p className="mt-4 text-sm leading-6 text-gray-400">
+                    <p className="mt-4 text-sm leading-6 text-black dark:text-gray-400">
                       No image uploaded yet.
                     </p>
                   </div>
@@ -521,11 +521,11 @@ export default function SiteForm({ id }: SiteProps) {
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             Features Section
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             You business features.
           </p>
 
@@ -533,7 +533,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="w-full">
               <label
                 htmlFor="feature-title"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Feature Title
               </label>
@@ -546,7 +546,7 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('featureSectionTitle', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -554,7 +554,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="w-full">
               <label
                 htmlFor="feature-tagline"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Feature Tagline
               </label>
@@ -567,7 +567,7 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('featureSectionTagline', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -575,7 +575,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="w-full">
               <label
                 htmlFor="feature-content"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Feature Tagline
               </label>
@@ -588,7 +588,7 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('featureSectionContent', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -596,7 +596,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="w-full">
               <label
                 htmlFor="featureImagePrompt"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Feature Image Prompt
               </label>
@@ -609,10 +609,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('featureImagePrompt', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 p-6">
+              <div className="mt-2 flex justify-center rounded-lg border dark:border-gray-500 blackorder-blackashed dark:border-gray-500 border-blackhite dark:border-gray-500/25 p-6">
                 {siteData.featureImageURL ? (
                  <div>
                  {/* Button Section */}
@@ -620,7 +620,7 @@ export default function SiteForm({ id }: SiteProps) {
                    {/* Generate Image Button */}
                    <button
                      disabled={isGeneratingImage}
-                     className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md"
+                     className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-brand-light flex items-center justify-center gap-1 rounded-md"
                      onClick={() =>
                        generateNewImage(
                          'stable',
@@ -637,7 +637,7 @@ export default function SiteForm({ id }: SiteProps) {
                    {/* Upload Button */}
                    <label
                      htmlFor="file-upload-feature"
-                     className="cursor-pointer px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
+                     className="cursor-pointer px-4 py-2 bg-purple-600 text-brand-light flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
                    >
                      Upload Image
                      <input
@@ -671,10 +671,10 @@ export default function SiteForm({ id }: SiteProps) {
                      className="mx-auto h-12 w-12 text-gray-500"
                      aria-hidden="true"
                    />
-                   <div className="mt-4 flex text-sm leading-6 text-gray-400">
+                   <div className="mt-4 flex text-sm leading-6 text-black dark:text-gray-400">
                      <p className="pl-1">or drag and drop</p>
                    </div>
-                   <p className="text-xs leading-5 text-gray-400">
+                   <p className="text-xs leading-5 text-black dark:text-gray-400">
                      PNG, JPG, GIF up to 10MB
                    </p>
                  </div>
@@ -682,7 +682,7 @@ export default function SiteForm({ id }: SiteProps) {
                 ) : (
                   <div className="text-center">
                     <IconPhotoAi className="mx-auto h-12 w-12 text-gray-500" aria-hidden="true" />
-                    <p className="mt-4 text-sm leading-6 text-gray-400">
+                    <p className="mt-4 text-sm leading-6 text-black dark:text-gray-400">
                       No image uploaded yet.
                     </p>
                   </div>
@@ -696,7 +696,7 @@ export default function SiteForm({ id }: SiteProps) {
                   <div className="col-span-6 sm:col-span-2">
                     <label
                       htmlFor={`feature-${index}`}
-                      className="block text-sm font-medium leading-6 text-white"
+                      className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
                     >
                       {index + 1}. Feature Title
                     </label>
@@ -709,7 +709,7 @@ export default function SiteForm({ id }: SiteProps) {
                         onChange={(e) =>
                           handleInputChange(index, 'title', e.target.value)
                         }
-                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                       />
                     </div>
                   </div>
@@ -717,7 +717,7 @@ export default function SiteForm({ id }: SiteProps) {
                   <div className="col-span-6 sm:col-span-4">
                     <label
                       htmlFor={`feature-content-${index}`}
-                      className="block text-sm font-medium leading-6 text-white"
+                      className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
                     >
                       {index + 1}. Feature Content
                     </label>
@@ -730,7 +730,7 @@ export default function SiteForm({ id }: SiteProps) {
                         onChange={(e) =>
                           handleInputChange(index, 'content', e.target.value)
                         }
-                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                       />
                     </div>
                   </div>
@@ -740,11 +740,11 @@ export default function SiteForm({ id }: SiteProps) {
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             Testimonial Section
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             Your business testimonal.
           </p>
 
@@ -752,7 +752,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="testimonial-name"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Name
               </label>
@@ -765,7 +765,7 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('testimonalName', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -773,7 +773,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="testimonial-content"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Content
               </label>
@@ -786,7 +786,7 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('testimonalContent', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -794,7 +794,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="testimonial-prompt"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Testimonal Image Prompt
               </label>
@@ -807,10 +807,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('testimonialImagePrompt', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10">
+              <div className="mt-2 flex justify-center rounded-lg border dark:border-gray-500 blackorder-blackashed dark:border-gray-500 border-blackhite dark:border-gray-500/25 px-6 py-10">
                 {siteData.testimonialImageURL ? (
                                       <div>
                       {/* Button Section */}
@@ -818,7 +818,7 @@ export default function SiteForm({ id }: SiteProps) {
                         {/* Generate Image Button */}
                         <button
                           disabled={isGeneratingImage}
-                          className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md"
+                          className="disabled:animate-pulse disabled:cursor-wait px-4 py-2 bg-purple-600 text-brand-light flex items-center justify-center gap-1 rounded-md"
                           onClick={() =>
                             generateNewImage(
                               'stable',
@@ -835,7 +835,7 @@ export default function SiteForm({ id }: SiteProps) {
                         {/* Upload Button */}
                         <label
                           htmlFor="file-upload-testimonal"
-                          className="cursor-pointer px-4 py-2 bg-purple-600 text-white flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
+                          className="cursor-pointer px-4 py-2 bg-purple-600 text-brand-light flex items-center justify-center gap-1 rounded-md hover:bg-purple-700"
                         >
                           Upload Image
                           <input
@@ -869,10 +869,10 @@ export default function SiteForm({ id }: SiteProps) {
                           className="mx-auto h-12 w-12 text-gray-500"
                           aria-hidden="true"
                         />
-                        <div className="mt-4 flex text-sm leading-6 text-gray-400">
+                        <div className="mt-4 flex text-sm leading-6 text-black dark:text-gray-400">
                           <p className="pl-1">or drag and drop</p>
                         </div>
-                        <p className="text-xs leading-5 text-gray-400">
+                        <p className="text-xs leading-5 text-black dark:text-gray-400">
                           PNG, JPG, GIF up to 10MB
                         </p>
                       </div>
@@ -880,7 +880,7 @@ export default function SiteForm({ id }: SiteProps) {
                 ) : (
                   <div className="text-center">
                     <IconPhotoAi className="mx-auto h-12 w-12 text-gray-500" aria-hidden="true" />
-                    <p className="mt-4 text-sm leading-6 text-gray-400">
+                    <p className="mt-4 text-sm leading-6 text-black dark:text-gray-400">
                       No image uploaded yet.
                     </p>
                   </div>
@@ -891,11 +891,11 @@ export default function SiteForm({ id }: SiteProps) {
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             Contact Us Section
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             A section to inform visitors how to contact you.
           </p>
 
@@ -903,7 +903,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="contactus-title"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Contact Us Title
               </label>
@@ -917,7 +917,7 @@ export default function SiteForm({ id }: SiteProps) {
                     onChange={(e) =>
                       handleFieldChange('contactUsTitle', e.target.value)
                     }
-                    className="flex-1 border-0 bg-transparent p-1.5 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-gray-600 dark:border-gray-500 dark:border-0  bg-transparent p-1.5 text-brand-dark dark:text-brand-light focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="Contact Us"
                   />
                 </div>
@@ -927,7 +927,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="contactus-content"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Contact Us Content
               </label>
@@ -940,10 +940,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('contactUsContent', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-400">
+              <p className="mt-3 text-sm leading-6 text-black dark:text-gray-400">
                 Write a short call to action for your contact us content.
               </p>
             </div>
@@ -951,7 +951,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="contactus-email"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Contact Us Email
               </label>
@@ -964,10 +964,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('contactUsEmail', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-400">
+              <p className="mt-3 text-sm leading-6 text-black dark:text-gray-400">
                 Allow visitors to contact you via email.
               </p>
             </div>
@@ -975,7 +975,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="contactus-phone"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Contact Us Phone
               </label>
@@ -988,10 +988,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('contactUsPhone', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-400">
+              <p className="mt-3 text-sm leading-6 text-black dark:text-gray-400">
                 Allow visitors to contact you via phone.
               </p>
             </div>
@@ -999,7 +999,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="contactus-address"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Contact Us Address
               </label>
@@ -1012,10 +1012,10 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('contactUsAddress', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-400">
+              <p className="mt-3 text-sm leading-6 text-black dark:text-gray-400">
                 Share your address with visitors.
               </p>
             </div>
@@ -1023,11 +1023,11 @@ export default function SiteForm({ id }: SiteProps) {
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             Footer
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             The section at the very bottom of your site. Use it to display your
             copywrite infomation.
           </p>
@@ -1036,7 +1036,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="copywrite"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Copywrite
               </label>
@@ -1049,17 +1049,17 @@ export default function SiteForm({ id }: SiteProps) {
                   onChange={(e) =>
                     handleFieldChange('copywrite', e.target.value)
                   }
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
           </div>
 
-          <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+          <div className="border-gray-600 dark:border-gray-500 dark:border-0  border-blackhite dark:border-gray-500/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-brand-dark dark:text-brand-light">
             MetaData Section
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-black dark:text-gray-400">
             This data is mainly used for SEO, and links on social media.
           </p>
 
@@ -1067,7 +1067,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="sm:col-span-6">
               <label
                 htmlFor="metaDescription"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Site Description
               </label>
@@ -1081,7 +1081,7 @@ export default function SiteForm({ id }: SiteProps) {
                     onChange={(e) =>
                       handleFieldChange('metaDescription', e.target.value)
                     }
-                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -1090,7 +1090,7 @@ export default function SiteForm({ id }: SiteProps) {
             <div className="col-span-full">
               <label
                 htmlFor="metaAuthor"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-brand-dark dark:text-brand-light"
               >
                 Site Author
               </label>
@@ -1103,10 +1103,10 @@ export default function SiteForm({ id }: SiteProps) {
                     onChange={(e) =>
                       handleFieldChange('metaAuthor', e.target.value)
                     }
-                    className="flex-1 border-0 bg-transparent p-1.5 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                    className="flex-1 border-gray-600 dark:border-gray-500 dark:border-0  bg-transparent p-1.5 text-brand-dark dark:text-brand-light focus:ring-0 sm:text-sm sm:leading-6"
                   />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-400">
+              <p className="mt-3 text-sm leading-6 text-black dark:text-gray-400">
                 The author of the website.
               </p>
             </div>
@@ -1117,7 +1117,7 @@ export default function SiteForm({ id }: SiteProps) {
 
         </div>
       </div>
-      <div className="text-sm m-2 text-gray-400">
+      <div className="text-sm m-2 text-black dark:text-gray-400">
         Note: Images will not regenerate automatically using the Update Site button. To
         regenerate your images use the Generate Image buttons in the form
         above, then use the Update Site button.
@@ -1125,13 +1125,13 @@ export default function SiteForm({ id }: SiteProps) {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="button"
-          className="text-sm font-semibold leading-6 text-white"
+          className="text-sm font-semibold leading-6 text-brand-dark dark:text-brand-light"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
+          className="rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-brand-light shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-700"
         >
           Update Site
         </button>
