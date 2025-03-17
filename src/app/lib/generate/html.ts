@@ -127,10 +127,10 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
           ${featuresHTML}
           ${aboutUsHTML}
           ${testimonialsHTML}
-          ${contactUsHTML}
           ${contactFormHTML}
-          ${footerHTML}
+          ${contactUsHTML}
           ${reviewFormHTML}
+          ${footerHTML}
         </body>
       </html>
     `
