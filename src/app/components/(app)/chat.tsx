@@ -50,7 +50,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     e.preventDefault();
     setIsLoading(true);
 
-    setMessages((prevMessages) => [...prevMessages, { role: "user", content: input }]);
+    if(input != " ") {setMessages((prevMessages) => [...prevMessages, { role: "user", content: input }]); }
     setMessages((prevMessages) => [...prevMessages, { role: "assistant", content: "" }]);
 
     const prompt = conversation ? input : `Hi, please generate a website for me. Here is some information about my business. Business Name: ${businessName}, Kinds of products we sell: ${productType}, Color information to use: ${colorType}`;
@@ -121,9 +121,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
               const resObj = JSON.parse(token);
 
               if (resObj.event === "start") {
-                // if (!chatUUID || chatUUID !== resObj.content) {
-                //   setChatUUID(resObj.content);
-                // }
                 if (resObj.type === "tool") {
                   if (resObj.tags[0] === "save-customer-information") {
                     setCurrentTool("Updating your contact info...");
@@ -169,6 +166,11 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                   } 
                   return updatedMessages;
                 });
+
+                // Check for the specific message to redirect
+                if (currentMessage.includes("go to /sites to check your website")) {
+                  router.push('/sites');
+                }
               }
 
             } catch (error) {
@@ -191,6 +193,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   }
 
   useEffect(() => {
+    console.log(messages)
     scrollRef.current?.scrollIntoView({ behavior: 'instant' })
   }, [messages])
 
@@ -224,7 +227,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       <div className={cn('pb-[60px] pt-4', className)}>
         {messages.length ? (
           <>
-            <ChatList messages={messages} isLoading={isLoading} currentTool={currentTool} />
+            <ChatList messages={messages.slice(1)} isLoading={isLoading} currentTool={currentTool} />
             <div ref={scrollRef} />
 
             {/* Input field for prompt*/}

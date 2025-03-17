@@ -68,8 +68,8 @@ export default function NavBar() {
                   <img
                       src={theme === 'light' ? '/White-logo.png' : '/logo.png'}
                       alt="Logo"
-                    className="h-12 w-auto sm:h-16"
-                  />
+                      className="h-24 w-auto sm:h-32 "
+                      />
                 </Link>
               </div>
                   <div className="hidden sm:flex sm:ml-6 justify-center items-center ">

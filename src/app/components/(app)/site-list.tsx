@@ -35,9 +35,9 @@ export function SiteList({type = "user"}) {
 
   if (!sites?.length && !isLoading) {
     return (
-      <div className="">
+      <div className="flex justify-center">
         <Link
-          href="dashboard"
+          href="/dashboard"
           className="bg-purple-600 text-white hover:bg-purple-500 px-4 py-2 rounded-md"
         >
           Generate a new site
