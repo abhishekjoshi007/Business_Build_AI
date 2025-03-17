@@ -63,32 +63,38 @@ export default function NavBar() {
 
               {/* Logo and navigation links */}
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  <IconAlien className="w-8 h-8 text-purple-600" />
-                </div>
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          pathname === item.href
-                            ? theme === 'dark'
-                              ? 'bg-[#393E46] text-[#EEEEEE]'
-                              : 'bg-[#00ADB5] text-[#222831]'
-                            : theme === 'dark'
-                            ? 'text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]'
-                            : 'text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]',
-                          'rounded-md px-3 py-2 text-sm font-medium'
-                        )}
-                        aria-current={pathname === item.href ? 'page' : undefined}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
+              <div className="flex flex-shrink-0 items-center">
+                <Link href="/">
+                  <img
+                      src={theme === 'light' ? '/White-logo.png' : '/logo.png'}
+                      alt="Logo"
+                    className="h-12 w-auto sm:h-16"
+                  />
+                </Link>
+              </div>
+                  <div className="hidden sm:flex sm:ml-6 justify-center items-center ">
+                    <div className="flex justify-center space-x-4 items-center">
+                      {navigation.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className={classNames(
+                            pathname === item.href
+                              ? theme === 'dark'
+                                ? 'bg-[#393E46] text-[#EEEEEE]'
+                                : 'bg-[#00ADB5] text-[#222831]'
+                              : theme === 'dark'
+                              ? 'text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]'
+                              : 'text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]',
+                            'rounded-md px-3 py-2 text-sm font-medium h-full'
+                          )}
+                          aria-current={pathname === item.href ? 'page' : undefined}
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
               </div>
 
               {/* Right side: Theme toggle & user menu */}
