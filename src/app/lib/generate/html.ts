@@ -85,7 +85,7 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
   })
 
   const reviewFormHTML = generateReviewSection({
-    sectionTitle: "Leave a Review",
+    sectionTitle: "Reviews",
     colors: colors
   })
 
@@ -127,9 +127,9 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
           ${featuresHTML}
           ${aboutUsHTML}
           ${testimonialsHTML}
-          ${contactFormHTML}
           ${contactUsHTML}
-          ${reviewFormHTML}
+           ${reviewFormHTML}
+          ${contactFormHTML}
           ${footerHTML}
         </body>
       </html>
