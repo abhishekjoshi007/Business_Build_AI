@@ -52,11 +52,11 @@ export const AccountForm: React.FC<AccountFormProps> = ({ user }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-12">
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-b border-gray-300 dark:border-white/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
             Your Profile
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
             This information will be not displayed publicly.
           </p>
 
@@ -64,7 +64,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ user }) => {
             <div className="sm:col-span-4">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
               >
                 Email address
               </label>
@@ -75,26 +75,26 @@ export const AccountForm: React.FC<AccountFormProps> = ({ user }) => {
                   type="email"
                   value={formState?.email}
                   onChange={handleEmailChange}
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 bg-gray-50 dark:bg-white/5 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-b border-white/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+        <div className="border-b border-gray-300 dark:border-white/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
             Account Settings
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
+          <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
             Choose your settings for this account.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label
-                htmlFor="country"
-                className="block text-sm font-medium leading-6 text-white"
+                htmlFor="model"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
               >
                 AI Model
               </label>
@@ -102,7 +102,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ user }) => {
                 <select
                   id="model"
                   name="model"
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
+                  className="block w-full rounded-md border-0 bg-gray-50 dark:bg-white/5 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
                   value={formState?.model?.id}
                   onChange={handleModelChange}
                 >
@@ -122,7 +122,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ user }) => {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="button"
-          className="text-sm font-semibold leading-6 text-white"
+          className="text-sm font-semibold leading-6 text-gray-900 dark:text-white"
         >
           Cancel
         </button>
