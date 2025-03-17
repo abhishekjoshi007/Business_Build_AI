@@ -168,7 +168,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                 });
 
                 // Check for the specific message to redirect
-                if (currentMessage.includes("go to /sites to check your website")) {
+                if (currentMessage.includes("/sites")) {
                   router.push('/sites');
                 }
               }
