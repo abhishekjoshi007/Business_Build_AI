@@ -39,7 +39,6 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
   let cssUrl
   let websiteUrl
 
-  //const navbarHTML = generateNavbar({title, navbarItems, colors});
 
   const heroHTML = generateHeroSection({
     title,
@@ -128,7 +127,7 @@ export async function generateHTML(props: SiteContent, bucketName: string, hasSS
           ${aboutUsHTML}
           ${testimonialsHTML}
           ${contactUsHTML}
-           ${reviewFormHTML}
+          ${reviewFormHTML}
           ${contactFormHTML}
           ${footerHTML}
         </body>
