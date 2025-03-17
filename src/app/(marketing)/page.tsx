@@ -10,7 +10,7 @@ export default async function Page() {
   return (
     <div className="space-y-8 bg-white dark:bg-black min-h-screen p-4">
       <h1 className="text-xl font-medium text-gray-800 dark:text-gray-300 mx-auto text-center">
-        Build a complete website with Alien Technology (AI) in under a minute!
+        Build a complete website with AI Technology in under a minute!
       </h1>
 
       <div className="space-y-6">
