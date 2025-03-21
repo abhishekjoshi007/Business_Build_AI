@@ -11,7 +11,7 @@ export default function ServicesPage() {
       image: "https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9?q=80&w=1200&auto=format&fit=crop",
       color: "from-purple-600 to-purple-800",
       hoverColor: "hover:from-purple-500 hover:to-purple-700",
-      link: "/logo-generator",
+      link: "/logo",
     },
     {
       title: "AI Website Generator",
