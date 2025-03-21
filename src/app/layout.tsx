@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Build a Site - AI',
     description: 'Auto Site builder, powered by AI.',
-    url: 'https://buildasite.ai',
+    url: 'https://buildbusinessAI',
     siteName: 'Build a Site - AI',
     locale: 'en_US',
     type: 'website',
