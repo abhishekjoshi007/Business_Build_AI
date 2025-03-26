@@ -3,29 +3,34 @@ import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Download, Loader2, RefreshCw, Image, Moon, Sun, Sparkles } from "lucide-react"
 
+interface LogoData {
+  image: string;
+  seed: number;
+}
+
 const GenerateLogo: React.FC = () => {
   const { theme, setTheme } = useTheme()
   const [companyName, setCompanyName] = useState("")
   const [industry, setIndustry] = useState("")
   const [colorScheme, setColorScheme] = useState("")
   const [designStyle, setDesignStyle] = useState("minimalist")
-  const [customPrompt, setCustomPrompt] = useState("")
-  const [imageUrl, setImageUrl] = useState("")
+  const [extraDetails, setExtraDetails] = useState("")
+  const [logoData, setLogoData] = useState<LogoData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [generationCount, setGenerationCount] = useState(0)
 
-  console.log(process.env.NEXT_PUBLIC_HF_API_KEY)
   const handleGenerateLogo = async () => {
-    if (!companyName && !customPrompt) {
-      setError("Please enter a company name or custom prompt");
+    const seed = Math.floor(Math.random() * 2147483647); // Generate a new random seed
+    if (!companyName && !extraDetails) {
+      setError("Please enter a company name or extra details");
       return;
     }
     setError("");
     setLoading(true);
     setGenerationCount((prev) => prev + 1);
   
-    const basePrompt = customPrompt || `
+    const basePrompt = `
       Create a professional business logo for "${companyName}"${industry ? ` in the ${industry} industry` : ""}.
       Style: ${designStyle}.
       Colors: ${colorScheme || "professional color palette"}.
@@ -34,34 +39,31 @@ const GenerateLogo: React.FC = () => {
       Technical requirements: high contrast, scalable, works in single color.
       Avoid: text, signatures, watermarks, complex scenes, photographs.
       Purpose: professional business branding and identity.
+      ${extraDetails}
     `.replace(/\n\s+/g, " ").trim();
   
     try {
-      const response = await fetch(
-        "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_HF_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            inputs: basePrompt,
-          }),
-        }
-      );
+      const response = await fetch("/api/generate-logo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: basePrompt,
+          seed: seed,
+          width: 512,
+          height: 512,
+          steps: 4
+        }),
+      });
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate logo");
+        throw new Error(errorData.message || "Failed to generate logo");
       }
   
-      // Get the image blob from the response
-      const imageBlob = await response.blob();
-      
-      // Create a URL for the blob
-      const imageUrl = URL.createObjectURL(imageBlob);
-      setImageUrl(imageUrl);
+      const data = await response.json();
+      setLogoData(data);
     } catch (error) {
       console.error("Error generating logo:", error);
       setError(error.message || "Failed to generate logo. Please try again.");
@@ -70,32 +72,28 @@ const GenerateLogo: React.FC = () => {
     }
   };
 
+  const handleDownload = () => {
+    if (!logoData?.image) return;
+    
+    const link = document.createElement('a');
+    link.href = logoData.image;
+    link.download = `${companyName || "business-logo"}-v${generationCount}-seed-${logoData.seed}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark")
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen w-full bg-gray-50 dark:bg-black transition-colors duration-200">
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="text-purple-600 dark:text-purple-400" />
-            <h1 className="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-400">
-              Professional Logo Generator
-            </h1>
-          </div>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-        </div>
-
+       
         {/* Input Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-black rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">
             Business Logo Details
           </h2>
@@ -118,7 +116,7 @@ const GenerateLogo: React.FC = () => {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Your business name"
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
 
@@ -132,7 +130,7 @@ const GenerateLogo: React.FC = () => {
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
                   placeholder="E.g., finance, technology, healthcare"
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -148,7 +146,7 @@ const GenerateLogo: React.FC = () => {
                   value={colorScheme}
                   onChange={(e) => setColorScheme(e.target.value)}
                   placeholder="E.g., blue and silver, warm tones"
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
 
@@ -160,7 +158,7 @@ const GenerateLogo: React.FC = () => {
                   id="designStyle"
                   value={designStyle}
                   onChange={(e) => setDesignStyle(e.target.value)}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 >
                   <option value="minimalist">Minimalist</option>
                   <option value="modern">Modern</option>
@@ -175,16 +173,16 @@ const GenerateLogo: React.FC = () => {
           </div>
 
           <div className="mt-4">
-            <label htmlFor="customPrompt" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Advanced Logo Prompt
+            <label htmlFor="extraDetails" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Extra Details
             </label>
             <textarea
-              id="customPrompt"
-              value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
+              id="extraDetails"
+              value={extraDetails}
+              onChange={(e) => setExtraDetails(e.target.value)}
               placeholder="Describe your perfect business logo..."
               rows={3}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               For professional designers: specify exact logo requirements
@@ -213,26 +211,31 @@ const GenerateLogo: React.FC = () => {
         </div>
 
         {/* Preview Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+        <div className="bg-white dark:bg-black rounded-xl shadow-md p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Logo Preview</h2>
-            {imageUrl && (
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Version #{generationCount}
-              </span>
+            {logoData && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Version #{generationCount}
+                </span>
+                <span className="text-xs bg-gray-100 dark:bg-black px-2 py-1 rounded text-gray-500 dark:text-gray-400">
+                  Seed: {logoData.seed}
+                </span>
+              </div>
             )}
           </div>
 
-          {imageUrl ? (
+          {logoData ? (
             <div className="flex flex-col">
-              <div className="relative bg-gray-100 dark:bg-gray-900 rounded-lg p-8 flex items-center justify-center min-h-[300px]">
+              <div className="relative bg-gray-100 dark:bg-black rounded-lg p-8 flex items-center justify-center min-h-[300px]">
                 <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 opacity-10">
                   {Array.from({ length: 64 }).map((_, i) => (
                     <div key={i} className="border border-gray-300 dark:border-gray-700"></div>
                   ))}
                 </div>
                 <img
-                  src={imageUrl}
+                  src={logoData.image}
                   alt={`Professional logo for ${companyName || "your business"}`}
                   className="max-w-full max-h-[300px] object-contain"
                 />
@@ -242,15 +245,15 @@ const GenerateLogo: React.FC = () => {
                 <button
                   onClick={handleGenerateLogo}
                   disabled={loading}
-                  className="flex-1 py-2 px-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition-colors flex items-center justify-center"
+                  className="flex-1 py-2 px-3 bg-gray-200 dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition-colors flex items-center justify-center"
                 >
                   <RefreshCw className="mr-2" size={18} />
                   Generate Alternative
                 </button>
 
                 <a
-                  href={imageUrl}
-                  download={`${companyName || "business-logo"}-v${generationCount}.png`}
+                  href={logoData.image}
+                  download={`${companyName || "business-logo"}-v${generationCount}-seed-${logoData.seed}.png`}
                   className="flex-1 py-2 px-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                 >
                   <Download className="mr-2" size={18} />
@@ -259,7 +262,7 @@ const GenerateLogo: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-100 dark:bg-gray-900 rounded-lg flex flex-col items-center justify-center p-8 min-h-[300px]">
+            <div className="bg-gray-100 dark:bg-black rounded-lg flex flex-col items-center justify-center p-8 min-h-[300px]">
               <div className="w-24 h-24 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
                 <Image size={40} className="text-purple-500 dark:text-purple-400" />
               </div>
@@ -269,9 +272,6 @@ const GenerateLogo: React.FC = () => {
             </div>
           )}
         </div>
-
-        {/* Logo Design Tips */}
-
       </div>
     </div>
   )
