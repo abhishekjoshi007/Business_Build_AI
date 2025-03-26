@@ -18,7 +18,7 @@ export function generateContactFormSection({
     <section class="overflow-hidden bg-white py-24 sm:py-32" id="contact">
       <div class="mx-auto max-w-6xl md:px-6 lg:px-8">
         <div class="text-center">
-          <h2 class="text-base font-semibold leading-7 ${colors.mainTextColor}">${sectionTitle}</h2>
+          <h2 class="text-base font-semibold leading-7 ">${sectionTitle}</h2>
         </div>
         <div class="mt-10 max-w-2xl mx-auto">
           <form class="grid grid-cols-1 gap-y-6" onsubmit="handleSubmit(event)">
@@ -32,7 +32,7 @@ export function generateContactFormSection({
               <textarea id="message" rows="4" placeholder="Write your message here" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
             </div>
             <div>
-              <button type="submit" class="w-full px-6 py-3 text-white font-semibold rounded-lg shadow-md ${colors.secondaryBackgroundColor} hover:${colors.mainBackgroundColor}">
+              <button type="submit" class="w-full px-6 py-3 text-white font-semibold rounded-lg shadow-md bg-black hover:bg-gray-800">
                 Send Message
               </button>
             </div>

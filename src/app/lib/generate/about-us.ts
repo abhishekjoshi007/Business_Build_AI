@@ -32,8 +32,8 @@ export function generateAboutUsSection({
       </div>
       <div class="relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-40">
         <div class="pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32">
-          <p class="mt-2 text-3xl font-bold tracking-tight ${colors.mainTextColor} sm:text-4xl">${title}</p>
-          <p class="mt-6 text-base leading-7 ${colors.mainTextColor}">${paragraph}</p>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">${title}</p>
+          <p class="mt-6 text-base leading-7 text-black">${paragraph}</p>
         </div>
       </div>
     </div>

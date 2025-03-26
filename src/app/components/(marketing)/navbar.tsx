@@ -64,11 +64,13 @@ export default function NavBar() {
                 {/* Logo */}
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/">
-                  <img
-                    src={theme === 'light' ? '/White-logo.png' : '/logo.png'}
-                    alt="Logo"
-                    className="h-24 w-auto sm:h-32 "
-                  />
+                  {mounted && (
+                    <img
+                      src={theme === 'light' ? '/White-logo.png' : '/logo.png'}
+                      alt="Logo"
+                      className="h-24 w-auto sm:h-32"
+                    />
+                  )}
                   </Link>
                 </div>
 

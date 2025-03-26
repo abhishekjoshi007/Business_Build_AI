@@ -15,10 +15,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: false },
-  { name: 'Sites', href: '/sites', current: false },
-]
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
@@ -26,8 +22,27 @@ function classNames(...classes: any) {
 
 export default function NavBar() {
   const pathname = usePathname()
+  console.log(pathname)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [navigation, setNavigation] = useState([{ name: 'Home', href: '/home' }])
+
+  useEffect(() => {
+    if (pathname === '/dashboard'  || pathname === '/dashboard/' || pathname === '/sites' || pathname === '/sites/') {
+      setNavigation([
+        { name: 'Home', href: '/home' },
+        { name: 'Dashboard', href: '/dashboard' },
+        { name: 'Sites', href: '/sites' },
+      ])
+    } else if (pathname === '/home/' || pathname === '/home') {
+      setNavigation([
+        { name: 'Website Generator', href: '/dashboard' },
+        { name: 'Logo Generator', href: '/logo' },
+      ])
+    } else {
+      setNavigation([{ name: 'Home', href: '/home' }])
+    }
+  }, [pathname])
 
   useEffect(() => {
     setMounted(true)
@@ -65,11 +80,13 @@ export default function NavBar() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
                 <Link href="/">
+                {mounted && (
                   <img
-                      src={theme === 'light' ? '/White-logo.png' : '/logo.png'}
-                      alt="Logo"
-                      className="h-24 w-auto sm:h-32 "
-                      />
+                    src={theme === 'light' ? '/White-logo.png' : '/logo.png'}
+                    alt="Logo"
+                    className="h-24 w-auto sm:h-32"
+                  />
+                )}
                 </Link>
               </div>
                   <div className="hidden sm:flex sm:ml-6 justify-center items-center ">

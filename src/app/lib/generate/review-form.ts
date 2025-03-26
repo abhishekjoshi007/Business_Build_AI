@@ -27,7 +27,7 @@ export function generateReviewSection({
             .map(review => `
               <div class="bg-white shadow-md rounded-lg p-6">
                 <div class="flex items-center mb-4">
-                  <span class="text-xl font-semibold ${colors.secondaryTextColor}">${review.name}</span>
+                  <span class="text-xl font-semibold text-gray-900">${review.name}</span>
                   <div class="ml-auto flex space-x-1">
                     ${Array.from({ length: review.rating })
                       .map(() => `
