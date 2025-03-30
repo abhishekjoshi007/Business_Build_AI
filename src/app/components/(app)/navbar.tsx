@@ -22,10 +22,9 @@ function classNames(...classes: any) {
 
 export default function NavBar() {
   const pathname = usePathname()
-  console.log(pathname)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null) // Track which dropdown is open
 
   // Define the main navigation items
   const mainNavigation = [
@@ -40,16 +39,14 @@ export default function NavBar() {
     },
     { name: "Logo Generator", href: "/logo", hasDropdown: false },
     { name: "Content Generator", href: "/content", hasDropdown: false },
-    { name: "Branding Generator", href: "/branding", hasDropdown: false },
+    { name: "Branding Generator", href: "/branding", hasDropdown: true,
+      dropdownItems: [
+        { name: "Business Card", href: "/businesscard" },
+        { name: "Business Letter", href: "/businessletter" },
+        { name: "Brand Name ", href: "/brandname" },
+      ],
+    },
   ]
-
-  // Set the navigation based on the current path
-  const [navigation, setNavigation] = useState(mainNavigation)
-
-  useEffect(() => {
-    // Always use the main navigation with the 4 headings
-    setNavigation(mainNavigation)
-  }, [pathname])
 
   useEffect(() => {
     setMounted(true)
@@ -61,14 +58,11 @@ export default function NavBar() {
       ? "flex items-center justify-center rounded-full p-2 bg-brand text-white"
       : "flex items-center justify-center rounded-full p-2 bg-gray-300 text-black"
 
-  // Placeholder for signOut function. Replace with actual implementation.
-  const signOut = () => {
-    console.log("Sign out function called")
-    // Add your sign-out logic here, e.g., using Firebase, Auth0, etc.
+  const handleDropdownToggle = (name: string) => {
+    setOpenDropdown((prev) => (prev === name ? null : name)) // Toggle the specific dropdown
   }
 
   return (
-    // Use custom light (bg-brand) and dark (bg-black) backgrounds.
     <Disclosure as="nav" className="bg-nav-activeLight dark:bg-black">
       {({ open }) => (
         <>
@@ -101,12 +95,12 @@ export default function NavBar() {
                 </div>
                 <div className="hidden sm:flex sm:ml-6 justify-center items-center">
                   <div className="flex justify-center space-x-4 items-center">
-                    {navigation.map((item) => (
+                    {mainNavigation.map((item) => (
                       <div key={item.name} className="relative">
                         {item.hasDropdown ? (
                           <div>
                             <button
-                              onClick={() => setIsWebsiteDropdownOpen(!isWebsiteDropdownOpen)}
+                              onClick={() => handleDropdownToggle(item.name)}
                               className={classNames(
                                 pathname === item.href
                                   ? theme === "dark"
@@ -121,7 +115,7 @@ export default function NavBar() {
                               {item.name}
                               <IconChevronDown className="ml-1 h-4 w-4" />
                             </button>
-                            {isWebsiteDropdownOpen && (
+                            {openDropdown === item.name && (
                               <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10">
                                 <div className="py-1">
                                   {item.dropdownItems?.map((dropdownItem) => (
@@ -179,10 +173,8 @@ export default function NavBar() {
                     className={toggleButtonClasses}
                   >
                     {theme === "light" ? (
-                      // When light, show moon icon (to allow switching to dark)
                       <IconMoon className="w-6 h-6" />
                     ) : (
-                      // When dark, show sun icon (to allow switching to light)
                       <IconSun className="w-6 h-6" />
                     )}
                   </button>
@@ -241,78 +233,6 @@ export default function NavBar() {
               </div>
             </div>
           </div>
-
-          {/* Mobile navigation links */}
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
-                <div key={item.name}>
-                  {item.hasDropdown ? (
-                    <>
-                      <Disclosure.Button
-                        as="button"
-                        onClick={() => setIsWebsiteDropdownOpen(!isWebsiteDropdownOpen)}
-                        className={classNames(
-                          pathname === item.href
-                            ? theme === "dark"
-                              ? "bg-[#393E46] text-[#EEEEEE]"
-                              : "bg-[#00ADB5] text-[#222831]"
-                            : theme === "dark"
-                              ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
-                              : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                          "block rounded-md px-3 py-2 text-base font-medium w-full text-left flex items-center justify-between",
-                        )}
-                      >
-                        {item.name}
-                        <IconChevronDown className="h-4 w-4" />
-                      </Disclosure.Button>
-                      {isWebsiteDropdownOpen && (
-                        <div className="pl-4">
-                          {item.dropdownItems?.map((dropdownItem) => (
-                            <Disclosure.Button
-                              key={dropdownItem.name}
-                              as="a"
-                              href={dropdownItem.href}
-                              className={classNames(
-                                pathname === dropdownItem.href
-                                  ? theme === "dark"
-                                    ? "bg-[#393E46] text-[#EEEEEE]"
-                                    : "bg-[#00ADB5] text-[#222831]"
-                                  : theme === "dark"
-                                    ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
-                                    : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                                "block rounded-md px-3 py-2 text-base font-medium",
-                              )}
-                            >
-                              {dropdownItem.name}
-                            </Disclosure.Button>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Disclosure.Button
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        pathname === item.href
-                          ? theme === "dark"
-                            ? "bg-[#393E46] text-[#EEEEEE]"
-                            : "bg-[#00ADB5] text-[#222831]"
-                          : theme === "dark"
-                            ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
-                            : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                        "block rounded-md px-3 py-2 text-base font-medium",
-                      )}
-                      aria-current={pathname === item.href ? "page" : undefined}
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Disclosure.Panel>
         </>
       )}
     </Disclosure>
