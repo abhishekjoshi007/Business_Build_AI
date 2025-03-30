@@ -1,67 +1,66 @@
-'use client'
+"use client"
 
-import { Cpu, Code, FileText, Palette } from "lucide-react"
+import { CreditCard, Mail, Lightbulb, ArrowLeft } from "lucide-react"
 import { useSession } from "next-auth/react"
-export default function ServicesPage() {
+import Link from "next/link"
+
+export default function MoreServicesPage() {
   const services = [
     {
-      title: "AI Logo Generator",
-      description: "Create unique, professional logos in seconds with our advanced AI technology.",
-      icon: <Palette className="w-8 h-8 text-purple-500" />,
-      image: "https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9?q=80&w=1200&auto=format&fit=crop",
+      title: "AI Business Card Generator",
+      description: "Create professional business cards with customized designs and information.",
+      icon: <CreditCard className="w-8 h-8 text-purple-500" />,
+      image: "https://images.unsplash.com/photo-1572502384866-dc3ce9c99e9f?q=80&w=1200&auto=format&fit=crop",
       color: "from-purple-600 to-purple-800",
       hoverColor: "hover:from-purple-500 hover:to-purple-700",
-      link: "/logo",
+      link: "/businesscard",
     },
     {
-      title: "AI Website Generator",
-      description: "Build complete, responsive websites in minutes without any coding knowledge.",
-      icon: <Code className="w-8 h-8 text-purple-500" />,
-      image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop",
+      title: "AI Business Letter Generator",
+      description: "Generate professional business letters for various purposes with perfect formatting.",
+      icon: <Mail className="w-8 h-8 text-purple-500" />,
+      image: "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?q=80&w=1200&auto=format&fit=crop",
       color: "from-purple-600 to-purple-800",
       hoverColor: "hover:from-purple-500 hover:to-purple-700",
-      link: "/dashboard",
+      link: "/businessletter",
     },
     {
-      title: "AI Content Generator",
-      description: "Generate high-quality, SEO-optimized content for your blog, social media, or marketing campaigns.",
-      icon: <FileText className="w-8 h-8 text-purple-500" />,
-      image: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=1200&auto=format&fit=crop",
+      title: "AI Brand Name Generator",
+      description: "Discover the perfect brand name for your business with our AI-powered generator.",
+      icon: <Lightbulb className="w-8 h-8 text-purple-500" />,
+      image: "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?q=80&w=1200&auto=format&fit=crop",
       color: "from-purple-600 to-purple-800",
       hoverColor: "hover:from-purple-500 hover:to-purple-700",
-      link: "/content",
-    },
-    {
-      title: "AI Branding Generator",
-      description: "Develop a complete brand identity including colors, typography, and design elements.",
-      icon: <Cpu className="w-8 h-8 text-purple-500" />,
-      image: "https://images.unsplash.com/photo-1560472355-536de3962603?q=80&w=1200&auto=format&fit=crop",
-      color: "from-purple-600 to-purple-800",
-      hoverColor: "hover:from-purple-500 hover:to-purple-700",
-      link: "/branding",
+      link: "/brandname",
     },
   ]
+
   const { data, status } = useSession()
   const user = data?.user
 
   if (!user) {
     return null
   }
+
   return (
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-6xl mx-auto">
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-500 transition-colors">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Link>
+        </div>
+
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
           {services.map((service, index) => (
             <div
               key={index}
               className="group bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 border border-gray-300 dark:border-gray-800 hover:border-purple-500/50"
             >
               <div className="relative h-48 overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-gradient-to-br from-white dark:from-black via-transparent to-purple-100/50 dark:to-purple-900/50 z-10 
-                  "
-                ></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white dark:from-black via-transparent to-purple-100/50 dark:to-purple-900/50 z-10"></div>
                 <img
                   src={service.image || "/placeholder.svg"}
                   alt={service.title}
@@ -75,19 +74,17 @@ export default function ServicesPage() {
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-xl text-gray-600 dark:text-gray-400   font-bold mb-2 group-hover:text-purple-400 transition-colors duration-300">
+                <h3 className="text-xl text-gray-600 dark:text-gray-400 font-bold mb-2 group-hover:text-purple-400 transition-colors duration-300">
                   {service.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  {service.description}
-                </p>
-                <a
+                <p className="text-gray-600 dark:text-gray-400 mb-4">{service.description}</p>
+                <Link
                   href={service.link}
                   className={`block w-full py-2.5 rounded-md bg-gradient-to-r ${service.color} ${service.hoverColor} 
                     transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/25 text-center text-white`}
                 >
                   Try Now
-                </a>
+                </Link>
               </div>
             </div>
           ))}
@@ -96,3 +93,4 @@ export default function ServicesPage() {
     </div>
   )
 }
+

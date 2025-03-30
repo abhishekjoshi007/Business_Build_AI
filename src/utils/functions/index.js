@@ -241,7 +241,7 @@ export async function createStableDiffusionImage(args) {
 export async function createDalle2Image(args) {
   try {
     const configuration = new Configuration({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     })
     const openai = new OpenAIApi(configuration)
     const res = await openai.createImage({
@@ -262,5 +262,117 @@ export async function createDalle2Image(args) {
   } catch (error) {
     console.error('Error during fetch:', error)
     throw new Error(error)
+  }
+} 
+
+const configuration = new Configuration({
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+})
+const openai = new OpenAIApi(configuration)
+export async function generateAIContent(
+  title,
+  contentType,
+  description
+) {
+  try {
+    // First generate the content
+    const contentResponse = await openai.createChatCompletion({
+      model: 'gpt-4', // Using GPT-4 for better quality
+      messages: [
+        {
+          role: 'system',
+          content: `You are a professional content writer. Generate a ${contentType} about "${title}". 
+          Follow these guidelines:
+          1. Write in a natural, human-like tone with slight imperfections
+          2. Vary sentence structure and length
+          3. Use occasional transitional phrases
+          4. Keep paragraphs short (2-3 sentences max)
+          5. Include relevant examples where appropriate
+          6. Make it engaging and professional
+          7. Length should be appropriate for a ${contentType} (about 300-500 words)`
+        },
+        {
+          role: 'user',
+          content: description,
+        },
+      ],
+      max_tokens: 1500,
+      temperature: 0.7, // Adds some creativity
+    })
+
+    const contentData = await contentResponse.json()
+    const content = contentData.choices[0]?.message?.content
+
+    if (!content) {
+      throw new Error('No content generated')
+    }
+
+    // Now generate an image prompt based on the content
+    const imagePromptResponse = await openai.createChatCompletion({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: `Generate a detailed, professional image prompt based on this content. 
+          Follow these rules:
+          1. Describe a visually compelling scene related to the content
+          2. Include style references (e.g., "cinematic lighting", "DSLR photo")
+          3. Specify important visual elements
+          4. Keep it under 100 words
+          5. Format for DALL-E image generation`
+        },
+        {
+          role: 'user',
+          content: `Title: ${title}\nContent: ${content.substring(0, 1000)}`, // Send first part of content
+        },
+      ],
+      max_tokens: 200,
+      temperature: 0.5,
+    })
+
+    const imagePromptData = await imagePromptResponse.json()
+    const imagePrompt = imagePromptData.choices[0]?.message?.content
+
+    if (!imagePrompt) {
+      throw new Error('No image prompt generated')
+    }
+
+    return { 
+      content,
+      imagePrompt: imagePrompt.trim() + 
+        `, professional digital art, high resolution, detailed, 8k, trending on artstation`
+    }
+  } catch (error) {
+    console.error('Error generating content:', error)
+    throw error
+  }
+}
+
+export async function generateAIImage(
+  prompt,
+  size
+) {
+  try {
+    // Clean up the prompt to avoid API errors
+    const cleanedPrompt = prompt.slice(0, 1000) // DALL-E has prompt length limits
+    
+    const response = await openai.createImage({
+      prompt: cleanedPrompt,
+      n: 1,
+      size,
+      response_format: 'url',
+    })
+
+    const data = await response.json()
+    const imageUrl = data.data[0]?.url
+
+    if (!imageUrl) {
+      throw new Error('No image generated')
+    }
+
+    return imageUrl
+  } catch (error) {
+    console.error('Error generating image:', error)
+    throw error
   }
 }
