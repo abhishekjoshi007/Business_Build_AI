@@ -48,7 +48,7 @@ export default function BusinessLetterGenerator() {
         <div className="flex items-center mb-8">
           <Mail className="w-8 h-8 text-purple-600 mr-3" />
           <h1 className="text-3xl text-black dark:text-white font-bold">Business Letter Generator</h1>
-        </div>
+        </div>AI 
 
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
           <form onSubmit={handleSubmit} className="space-y-6">

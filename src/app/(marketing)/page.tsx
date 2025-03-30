@@ -3,10 +3,12 @@ import Link from 'next/link'
 import { LoginButton, RegisterButton } from '@/ui/nav-buttons'
 import AlienInvasion from '@/ui/alien-invasion'
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
-
+import { redirect } from 'next/navigation'
 export default async function Page() {
   const session = await getServerSession(authOptions)
-
+  if(session){
+    redirect('/home')
+  }
   return (
     <div className="space-y-8 bg-white dark:bg-black min-h-screen p-4">
       <h1 className="text-xl font-medium text-gray-800 dark:text-gray-300 mx-auto text-center">
