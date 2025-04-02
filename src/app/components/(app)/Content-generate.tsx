@@ -15,7 +15,6 @@ interface GeneratedContent {
   imageUrl: string
 }
 
-
 export default function AIContentGenerator() {
   const { theme } = useTheme()
   const [title, setTitle] = useState("")
@@ -25,44 +24,46 @@ export default function AIContentGenerator() {
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null)
 
   const handleGenerate = async () => {
-    if (!title || !contentType || !description) return;
-  
-    setIsGenerating(true);
-  
+    if (!title || !contentType || !description) return
+
+    setIsGenerating(true)
+
     try {
       // First generate content and image prompt together
       const { content, imagePrompt } = await generateAIContent(
-        title, 
-        contentType as ContentType, 
+        title,
+        contentType as ContentType,
         description
-      );
-  
+      )
+
       // Then generate the image using the created prompt
-      const imageUrl = await generateAIImage(imagePrompt);
-  
+      const imageUrl = await generateAIImage(imagePrompt)
+
       setGeneratedContent({
         title,
         type: contentType as ContentType,
         content,
-        imageUrl
-      });
-  
+        imageUrl,
+      })
+
       // Optional: show the image prompt to users
-      console.log("Generated image prompt:", imagePrompt);
-      
+      console.log("Generated image prompt:", imagePrompt)
     } catch (error) {
-      console.error("Generation failed:", error);
+      console.error("Generation failed:", error)
       // Fallback with the description as content
       setGeneratedContent({
         title,
         type: contentType as ContentType,
         content: `This is a generated ${contentType} about "${title}".\n\n${description}`,
-        imageUrl: `/placeholder.svg?height=300&width=600&text=AI+Generated+Image+for+${encodeURIComponent(title)}`
-      });
+        imageUrl: `/placeholder.svg?height=300&width=600&text=AI+Generated+Image+for+${encodeURIComponent(
+          title
+        )}`,
+      })
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
+
   const contentTypeLabels: Record<ContentType, string> = {
     blog: "Blog Post",
     "social-post": "Social Media Post",
@@ -73,6 +74,16 @@ export default function AIContentGenerator() {
 
   return (
     <div className="space-y-8 p-4">
+      {/* Fullscreen Loader */}
+      {isGenerating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="flex flex-col items-center">
+            <Loader className="animate-spin text-white w-16 h-16 mb-4" />
+            <p className="text-white text-lg font-medium">Generating Content...</p>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">AI Content Generator</h1>
       </div>
@@ -199,4 +210,3 @@ export default function AIContentGenerator() {
     </div>
   )
 }
-

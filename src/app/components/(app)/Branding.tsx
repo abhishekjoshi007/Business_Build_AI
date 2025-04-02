@@ -10,7 +10,7 @@ export default function MoreServicesPage() {
       title: "AI Business Card Generator",
       description: "Create professional business cards with customized designs and information.",
       icon: <CreditCard className="w-8 h-8 text-purple-500" />,
-      image: "https://images.unsplash.com/photo-1572502384866-dc3ce9c99e9f?q=80&w=1200&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1628891439478-c613e85af7d6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnVzaW5lc3MlMjBjYXJkfGVufDB8fDB8fHww",
       color: "from-purple-600 to-purple-800",
       hoverColor: "hover:from-purple-500 hover:to-purple-700",
       link: "/businesscard",
@@ -45,13 +45,7 @@ export default function MoreServicesPage() {
   return (
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-500 transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
-          </Link>
-        </div>
-
+      
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
           {services.map((service, index) => (

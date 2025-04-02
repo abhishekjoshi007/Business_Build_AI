@@ -39,7 +39,7 @@ export async function GET(
     })
     if (!user) {
       return NextResponse.json({ message: 'No User found.' }, { status: 401 })
-    }
+    }   
 
     user.model = user.model ? user.model : OpenAIModels[OpenAIModelID.GPT_3_5]
     delete user.password

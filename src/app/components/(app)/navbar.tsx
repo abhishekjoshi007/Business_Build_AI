@@ -24,7 +24,8 @@ export default function NavBar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null) // Track which dropdown is open
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [mobileOpenDropdown, setMobileOpenDropdown] = useState<string | null>(null)
 
   // Define the main navigation items
   const mainNavigation = [
@@ -52,19 +53,22 @@ export default function NavBar() {
     setMounted(true)
   }, [])
 
-  // Define a toggle button class to style the button based on the theme.
   const toggleButtonClasses =
     theme === "light"
       ? "flex items-center justify-center rounded-full p-2 bg-brand text-white"
       : "flex items-center justify-center rounded-full p-2 bg-gray-300 text-black"
 
   const handleDropdownToggle = (name: string) => {
-    setOpenDropdown((prev) => (prev === name ? null : name)) // Toggle the specific dropdown
+    setOpenDropdown((prev) => (prev === name ? null : name))
+  }
+
+  const handleMobileDropdownToggle = (name: string) => {
+    setMobileOpenDropdown((prev) => (prev === name ? null : name))
   }
 
   return (
     <Disclosure as="nav" className="bg-nav-activeLight dark:bg-black">
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <div className="mx-auto max-w-6xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
@@ -94,6 +98,7 @@ export default function NavBar() {
                   </Link>
                 </div>
                 <div className="hidden sm:flex sm:ml-6 justify-center items-center">
+                  {/* Main navigation */}
                   <div className="flex justify-center space-x-4 items-center">
                     {mainNavigation.map((item) => (
                       <div key={item.name} className="relative">
@@ -132,6 +137,7 @@ export default function NavBar() {
                                             : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
                                         "block px-4 py-2 text-sm",
                                       )}
+                                      onClick={() => close()} // Close the menu after clicking
                                     >
                                       {dropdownItem.name}
                                     </Link>
@@ -151,9 +157,10 @@ export default function NavBar() {
                                 : theme === "dark"
                                   ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
                                   : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                              "rounded-md px-3 py-2 text-xs font-medium  h-full",
+                              "block rounded-md px-3 py-2 text-xs font-medium  h-full",
                             )}
                             aria-current={pathname === item.href ? "page" : undefined}
+                            onClick={() => close()} // Close the menu after clicking
                           >
                             {item.name}
                           </Link>
@@ -233,6 +240,79 @@ export default function NavBar() {
               </div>
             </div>
           </div>
+
+          {/* Mobile menu with glassy effect */}
+          <Disclosure.Panel className="sm:hidden">
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md z-40">
+              <div className="space-y-1 px-2 pb-3 pt-2">
+                {mainNavigation.map((item) => (
+                  <div key={item.name} className="relative">
+                    {item.hasDropdown ? (
+                      <div>
+                        <button
+                          onClick={() => handleMobileDropdownToggle(item.name)}
+                          className={classNames(
+                            pathname === item.href
+                              ? theme === "dark"
+                                ? "bg-[#393E46] text-[#EEEEEE]"
+                                : "bg-[#00ADB5] text-[#222831]"
+                              : theme === "dark"
+                                ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
+                                : "text-[#fff] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
+                            "w-full flex justify-between items-center rounded-md px-3 py-2 text-base font-medium",
+                          )}
+                        >
+                          {item.name}
+                          <IconChevronDown className={`ml-1 h-4 w-4 transition-transform ${mobileOpenDropdown === item.name ? 'transform rotate-180' : ''}`} />
+                        </button>
+                        {mobileOpenDropdown === item.name && (
+                          <div className="pl-4 space-y-1">
+                            {item.dropdownItems?.map((dropdownItem) => (
+                              <Link
+                                key={dropdownItem.name}
+                                href={dropdownItem.href}
+                                className={classNames(
+                                  pathname === dropdownItem.href
+                                    ? theme === "dark"
+                                      ? "bg-[#393E46] text-[#EEEEEE]"
+                                      : "bg-[#00ADB5] text-[#222831]"
+                                    : theme === "dark"
+                                      ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
+                                      : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
+                                  "block rounded-md px-3 py-2 text-base font-medium",
+                                )}
+                                onClick={() => close()} // Close the menu after clicking
+                              >
+                                {dropdownItem.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={classNames(
+                          pathname === item.href
+                            ? theme === "dark"
+                              ? "bg-[#393E46] text-[#EEEEEE]"
+                              : "bg-[#00ADB5] text-[#222831]"
+                            : theme === "dark"
+                              ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
+                              : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
+                          "block rounded-md px-3 py-2 text-base font-medium",
+                        )}
+                        aria-current={pathname === item.href ? "page" : undefined}
+                        onClick={() => close()} // Close the menu after clicking
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Disclosure.Panel>
         </>
       )}
     </Disclosure>
