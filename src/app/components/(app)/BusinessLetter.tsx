@@ -36,13 +36,7 @@ export default function BusinessLetterGenerator() {
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <Link
-            href="/branding"
-            className="inline-flex items-center text-purple-600 hover:text-purple-500 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Services
-          </Link>
+         
         </div>
 
         <div className="flex items-center mb-8">

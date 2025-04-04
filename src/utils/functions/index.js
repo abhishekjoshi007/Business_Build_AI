@@ -275,79 +275,136 @@ export async function generateAIContent(
   description
 ) {
   try {
-    // First generate the content
+    // Custom system prompts for each content type
+    const systemPrompts = {
+      "blog": `You are a professional blogger. Create a comprehensive blog post about "${title}" with:
+              1. Engaging introduction with a hook
+              2. 3-5 main sections with subheadings (H2)
+              3. Bullet points or numbered lists where appropriate
+              4. Conversational yet informative tone
+              5. 800-1200 words total
+              6. Conclusion with key takeaways
+              7. Include 1-2 relevant examples or case studies`,
+      
+      "social-post": `You are a social media expert. Create an engaging post about "${title}" with:
+              1. One attention-grabbing headline
+              2. Caption of 4-8 lines maximum
+              3. Include 2-4 relevant emojis
+              4. Add 1-2 relevant hashtags
+              5. Conversational, upbeat tone
+              6. Possible CTA (like, share, comment)
+              7. Character limit: 2200 (for LinkedIn/Twitter)`,
+      
+      "script": `You are a professional scriptwriter. Create a video/audio script about "${title}" with:
+              1. Clear scene/setting description
+              2. Natural dialogue format
+              3. Speaker labels (Host:, Narrator:, etc.)
+              4. Visual/sound cues in brackets
+              5. Duration: 3-5 minutes
+              6. Engaging hook in first 10 seconds
+              7. Call-to-action at the end`,
+      
+      "article": `You are a journalist writing a professional article about "${title}" with:
+              1. News-style lead paragraph (who, what, when, where, why)
+              2. 500-800 words total
+              3. Quotes or expert opinions if relevant
+              4. Formal but accessible tone
+              5. 3-5 paragraphs with clear structure
+              6. Fact-based with verifiable information
+              7. Conclusion summarizing key points`,
+      
+      "email": `You are a copywriter creating a marketing email about "${title}" with:
+              1. Attention-grabbing subject line
+              2. Personalized greeting
+              3. Clear value proposition in opening
+              4. 2-3 short paragraphs max
+              5. Bullet points for key benefits
+              6. Strong CTA button text
+              7. Professional but friendly tone
+              8. Mobile-optimized length (50-125 words)`
+    };
+
     const contentResponse = await openai.createChatCompletion({
-      model: 'gpt-4', // Using GPT-4 for better quality
+      model: 'gpt-4',
       messages: [
         {
           role: 'system',
-          content: `You are a professional content writer. Generate a ${contentType} about "${title}". 
-          Follow these guidelines:
-          1. Write in a natural, human-like tone with slight imperfections
-          2. Vary sentence structure and length
-          3. Use occasional transitional phrases
-          4. Keep paragraphs short (2-3 sentences max)
-          5. Include relevant examples where appropriate
-          6. Make it engaging and professional
-          7. Length should be appropriate for a ${contentType} (about 300-500 words)`
+          content: systemPrompts[contentType]
         },
         {
           role: 'user',
           content: description,
         },
       ],
-      max_tokens: 1500,
-      temperature: 0.7, // Adds some creativity
-    })
+      max_tokens: {
+        "blog": 2000,
+        "social-post": 300,
+        "script": 1500,
+        "article": 1200,
+        "email": 500
+      }[contentType],
+      temperature: {
+        "blog": 0.7,
+        "social-post": 0.8,  // More creative for social
+        "script": 0.6,
+        "article": 0.5,      // More factual for articles
+        "email": 0.65
+      }[contentType],
+    });
 
-    const contentData = await contentResponse.json()
-    const content = contentData.choices[0]?.message?.content
+    const contentData = await contentResponse.json();
+    const content = contentData.choices[0]?.message?.content;
 
     if (!content) {
-      throw new Error('No content generated')
+      throw new Error('No content generated');
     }
 
-    // Now generate an image prompt based on the content
+    // Custom image prompt styles for different content types
+    const imagePromptStyles = {
+      "blog": "professional digital illustration, detailed, informative style",
+      "social-post": "vibrant colors, trendy social media graphic, Instagram aesthetic",
+      "script": "cinematic still, movie scene composition, dramatic lighting",
+      "article": "photojournalism style, realistic, DSLR photo quality",
+      "email": "clean marketing graphic, minimalist design, product-focused"
+    };
+
     const imagePromptResponse = await openai.createChatCompletion({
       model: 'gpt-4',
       messages: [
         {
           role: 'system',
-          content: `Generate a detailed, professional image prompt based on this content. 
-          Follow these rules:
-          1. Describe a visually compelling scene related to the content
-          2. Include style references (e.g., "cinematic lighting", "DSLR photo")
-          3. Specify important visual elements
-          4. Keep it under 100 words
-          5. Format for DALL-E image generation`
+          content: `Create an image prompt for ${contentType} about "${title}":
+          1. Describe main visual elements (3-5 key items)
+          2. Specify style: ${imagePromptStyles[contentType]}
+          3. Mood/atmosphere matching the content
+          4. Keep under 80 words
+          5. Format for DALL-E generation`
         },
         {
           role: 'user',
-          content: `Title: ${title}\nContent: ${content.substring(0, 1000)}`, // Send first part of content
+          content: `Title: ${title}\nContent: ${content.substring(0, 1000)}`,
         },
       ],
       max_tokens: 200,
       temperature: 0.5,
-    })
+    });
 
-    const imagePromptData = await imagePromptResponse.json()
-    const imagePrompt = imagePromptData.choices[0]?.message?.content
+    const imagePromptData = await imagePromptResponse.json();
+    let imagePrompt = imagePromptData.choices[0]?.message?.content;
 
     if (!imagePrompt) {
-      throw new Error('No image prompt generated')
+      imagePrompt = `professional ${contentType} image about ${title}`;
     }
 
     return { 
       content,
-      imagePrompt: imagePrompt.trim() + 
-        `, professional digital art, high resolution, detailed, 8k, trending on artstation`
-    }
+      imagePrompt: `${imagePrompt.trim()}, high resolution, 8k, trending on artstation`
+    };
   } catch (error) {
-    console.error('Error generating content:', error)
-    throw error
+    console.error('Error generating content:', error);
+    throw error;
   }
 }
-
 export async function generateAIImage(
   prompt,
   size
@@ -375,4 +432,37 @@ export async function generateAIImage(
     console.error('Error generating image:', error)
     throw error
   }
+}
+
+export async function generateBrandNames(formData) {
+  setLoading(true);
+  
+  const prompt = `Generate 10 creative brand name ideas for a ${formData.industry} business. 
+  Keywords: ${formData.keywords}.
+  Business description: ${formData.description}.
+  Target audience: ${formData.targetAudience}.
+  Name length: ${formData.nameLength}.
+  Style: ${formData.nameStyle}.
+  ${formData.avoidWords ? `Avoid: ${formData.avoidWords}.` : ''}
+  ${formData.mustInclude ? `Must include: ${formData.mustInclude}.` : ''}
+  Provide the names in a numbered list.`;
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        max_tokens: 500
+      })
+    });
+
+    const data = await response.json();
+    const names = data.choices[0]?.message?.content;
+    // Process the names (parse the list, etc.)
+    return names;
+  
 }

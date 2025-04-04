@@ -1,10 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import { ArrowLeft, CreditCard, Loader2 } from "lucide-react"
-import Link from "next/link"
+import { CreditCard, Loader2 } from "lucide-react"
 
 export default function BusinessCardGenerator() {
   const [loading, setLoading] = useState(false)
@@ -12,6 +10,7 @@ export default function BusinessCardGenerator() {
     name: "",
     title: "",
     company: "",
+    description: "",
     email: "",
     phone: "",
     website: "",
@@ -19,39 +18,70 @@ export default function BusinessCardGenerator() {
     color: "#6D28D9", // Default purple color
     style: "modern",
   })
+  const [imageUrl, setImageUrl] = useState<string | null>(null) // State to store the generated image URL
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setImageUrl(null) // Reset the image URL before generating a new one
+    try {
+      // Construct the prompt for the image generation
+      const prompt = `Create a professional ${formData.style} style single-sided business card with ${formData.color} as the primary color. 
+      Include the following details:
+      - Name: ${formData.name}
+      - Title: ${formData.title}
+      - Company: ${formData.company}
+      - Description: ${formData.description}
+      - Email: ${formData.email}
+      - Phone: ${formData.phone}${formData.website ? `  - Website: ${formData.website}` : ''}
+      ${formData.address ? `  - Address: ${formData.address}` : ''}
+      
+      The design should be clean, professional, and match the ${formData.style} style. 
+      Use a color scheme based on ${formData.color} and ensure all text is readable. The card must be strictly single-sided.`
 
-    // Simulate API call
-    setTimeout(() => {
+      // Call the OpenAI API
+      const response = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          prompt,
+          n: 1, // Number of images to generate
+          size: "1024x1024", // You might want to use "512x512" for business cards
+          model: "dall-e-3", // Use the latest model
+          quality: "standard", // Or "hd" for higher quality
+          style: "natural" // Or "vivid" for more artistic
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`)
+      }
+
+      const data = await response.json()
+      const generatedImageUrl = data.data[0].url
+      setImageUrl(generatedImageUrl) // Set the generated image URL
+    } catch (error) {
+      console.error("Error generating business card:", error)
+      alert("Failed to generate business card. Please try again.")
+    } finally {
       setLoading(false)
-      alert("Business card generated successfully!")
-    }, 2000)
+    }
   }
 
   return (
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/branding"
-            className="inline-flex items-center text-purple-600 hover:text-purple-500 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Services
-          </Link>
-        </div>
-
         <div className="flex items-center mb-8">
           <CreditCard className="w-8 h-8 text-purple-600 mr-3" />
-          <h1 className="text-3xl font-bold">AI Business Card Generator</h1>
+          <h1 className="text-3xl text-black dark:text-white font-bold">AI Business Card Generator</h1>
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
@@ -102,6 +132,22 @@ export default function BusinessCardGenerator() {
                   required
                   className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Acme Inc."
+                />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Company Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={3}
+                  required
+                  className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Describe your company, its services, and what makes it unique..."
                 />
               </div>
 
@@ -221,6 +267,27 @@ export default function BusinessCardGenerator() {
             </div>
           </form>
         </div>
+
+        {/* Preview Section */}
+        {imageUrl && (
+          <div className="mt-8 bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
+            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Generated Business Card</h2>
+            <div className="flex flex-col items-center space-y-4">
+              <img
+                src={imageUrl}
+                alt="Generated Business Card"
+                className="w-full max-w-md rounded-md border border-gray-300 dark:border-gray-700"
+              />
+              <a
+                href={imageUrl}
+                download="business-card.png"
+                className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium transition-all duration-300"
+              >
+                Download Business Card
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

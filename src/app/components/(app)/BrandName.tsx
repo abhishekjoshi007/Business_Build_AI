@@ -1,10 +1,7 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { ArrowLeft, Lightbulb, Loader2 } from "lucide-react"
-import Link from "next/link"
+import React, { useState } from "react"
+import { Lightbulb, Loader2 } from "lucide-react"
 
 export default function BrandNameGenerator() {
   const [loading, setLoading] = useState(false)
@@ -18,39 +15,60 @@ export default function BrandNameGenerator() {
     avoidWords: "",
     mustInclude: "",
   })
+  const [generatedNames, setGeneratedNames] = useState<string | null>(null) // State to store generated names
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setGeneratedNames(null) // Reset the generated names before generating new ones
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const prompt = `Generate 10 creative brand name ideas for a ${formData.industry} business. 
+      Keywords: ${formData.keywords}.
+      Business description: ${formData.description}.
+      Target audience: ${formData.targetAudience}.
+      Name length: ${formData.nameLength}.
+      Style: ${formData.nameStyle}.
+      ${formData.avoidWords ? `Avoid: ${formData.avoidWords}.` : ''}
+      ${formData.mustInclude ? `Must include: ${formData.mustInclude}.` : ''}
+      Provide the names in a numbered list.`
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.7,
+          max_tokens: 500
+        })
+      })
+
+      const data = await response.json()
+      const names = data.choices[0]?.message?.content
+      setGeneratedNames(names) // Set the generated names
+    } catch (error) {
+      console.error("Error generating brand names:", error)
+      alert("Failed to generate brand names. Please try again.")
+    } finally {
       setLoading(false)
-      alert("Brand names generated successfully!")
-    }, 2000)
+    }
   }
 
   return (
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/branding"
-            className="inline-flex items-center text-purple-600 hover:text-purple-500 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Services
-          </Link>
-        </div>
-
         <div className="flex items-center mb-8">
           <Lightbulb className="w-8 h-8 text-purple-600 mr-3" />
-          <h1 className="text-3xl font-bold">AI Brand Name Generator</h1>
+          <h1 className=" text-black dark:text-white text-3xl font-bold">AI Brand Name Generator</h1>
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
@@ -204,6 +222,14 @@ export default function BrandNameGenerator() {
             </div>
           </form>
         </div>
+
+        {/* Display Generated Names */}
+        {generatedNames && (
+          <div className="mt-8 bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
+            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Generated Brand Names</h2>
+            <pre className="whitespace-pre-wrap bg-white dark:bg-black text-black dark:text-gray-300">{generatedNames}</pre>
+          </div>
+        )}
       </div>
     </div>
   )
