@@ -48,6 +48,6 @@
     "src/app/api/generateUploadUrl/route.js",
     "src/app/components/app/FileDetails.jsx",
     "src/app/components/ui/ResetPasswordModal.jsx"
-  ],
+, "src/app/api/download/route.ts"  ],
   "exclude": ["node_modules"]
 }

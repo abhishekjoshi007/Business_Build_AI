@@ -25,6 +25,33 @@ export default function BusinessCardGenerator() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleDownload = async () => {
+    if (!imageUrl) return
+    
+    try {
+      setLoading(true)
+      // Fetch the image data
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `business-card-${formData.name || 'design'}.png`
+      document.body.appendChild(a)
+      a.click()
+      
+      // Clean up
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Download failed:', error)
+      alert('Failed to download image. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -278,13 +305,20 @@ export default function BusinessCardGenerator() {
                 alt="Generated Business Card"
                 className="w-full max-w-md rounded-md border border-gray-300 dark:border-gray-700"
               />
-              <a
-                href={imageUrl}
-                download="business-card.png"
-                className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium transition-all duration-300"
-              >
-                Download Business Card
-              </a>
+            <button
+              onClick={handleDownload}
+              disabled={loading}
+              className="py-2 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium transition-all duration-300"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin inline" />
+                  Downloading...
+                </>
+              ) : (
+                "Download Business Card"
+              )}
+            </button>
             </div>
           </div>
         )}

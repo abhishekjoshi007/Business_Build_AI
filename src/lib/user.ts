@@ -103,8 +103,8 @@ export const useUpdateUser = () => {
           context.previousUser,
         )
       }
-      // toast.error('There was an error while updating your profile.')
-      toast.success('Profile updated successfully.')
+      toast.error('There was an error while updating your profile.')
+      // toast.success('Profile updated successfully.')
 
     },
     onSuccess: () => {

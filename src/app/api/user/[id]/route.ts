@@ -122,13 +122,6 @@ export async function PATCH(
     )
   }
 
-  const user = token.user as any
-  if (!user) {
-    return NextResponse.json(
-      { error: 'Error. User not found.' },
-      { status: 400 },
-    )
-  }
 
   if (!id) {
     return NextResponse.json({ error: 'Site ID not found.' }, { status: 400 })
