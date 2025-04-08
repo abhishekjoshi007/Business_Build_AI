@@ -466,3 +466,26 @@ export async function generateBrandNames(formData) {
     return names;
   
 }
+
+export async function getSession() {
+  try {
+    const response = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
+      method: 'GET',
+      credentials: 'include', // Important for sending cookies
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store', // Ensure fresh session data
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch session')
+    }
+    const session = await response.json()
+    console.log(session)
+    return session
+  } catch (error) {
+    console.error('Error fetching session:', error)
+    return null
+  }
+}

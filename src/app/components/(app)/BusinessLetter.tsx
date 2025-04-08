@@ -1,60 +1,105 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
 import { ArrowLeft, Mail, Loader2 } from "lucide-react"
 import Link from "next/link"
 
 export default function BusinessLetterGenerator() {
   const [loading, setLoading] = useState(false)
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     senderName: "",
-    senderTitle: "",
     senderCompany: "",
-    senderAddress: "",
-    senderEmail: "",
-    senderPhone: "",
+    senderEmail: ""
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setImageUrl(null)
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const prompt = `Generate a professional business letter template on A4 size paper with these details:
+      
+      Letterhead:
+      - Company: ${formData.senderCompany}
+      - Name: ${formData.senderName}
+      - Email: ${formData.senderEmail}
+      
+      The letter should include:
+      1. Date line (show "[Date]")
+      2. Recipient address block (show "[Recipient's Address]")
+      3. Formal salutation ("Dear [Recipient's Name],")
+      4. Three paragraph body with placeholder text (use "Lorem ipsum...")
+      5. Closing ("Sincerely,")
+      6. Space for signature
+      7. Sender's name and title
+      
+      Use a clean, professional design with black text on white background. 
+      Include subtle borders or divider lines if appropriate. 
+      Make sure all text is clearly readable.`
+
+      const response = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          prompt,
+          n: 1,
+          size: "1024x1024",
+          model: "dall-e-3",
+          quality: "standard",
+          style: "natural"
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`)
+      }
+
+      const data = await response.json()
+      setImageUrl(data.data[0].url)
+    } catch (error) {
+      console.error("Error generating letter:", error)
+      alert("Failed to generate letter. Please try again.")
+    } finally {
       setLoading(false)
-      alert("Sender information submitted successfully!")
-    }, 2000)
+    }
   }
 
   return (
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-         
+          <Link href="/" className="flex items-center text-purple-600 hover:text-purple-800 dark:hover:text-purple-400">
+            <ArrowLeft className="w-5 h-5 mr-1" />
+            Back to Home
+          </Link>
         </div>
 
         <div className="flex items-center mb-8">
           <Mail className="w-8 h-8 text-purple-600 mr-3" />
-          <h1 className="text-3xl text-black dark:text-white font-bold">Business Letter Generator</h1>
-        </div>AI 
+          <h1 className="text-3xl font-bold">Business Letter Generator</h1>
+        </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <h2 className="text-xl font-semibold border-b border-gray-300 dark:border-gray-700 pb-2">
-                Sender Information
+                Required Information
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="senderName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Your Full Name
+                  <label htmlFor="senderName" className="block text-sm font-medium">
+                    Your Name
                   </label>
                   <input
                     type="text"
@@ -63,29 +108,13 @@ export default function BusinessLetterGenerator() {
                     value={formData.senderName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="John Doe"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="senderTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Your Job Title
-                  </label>
-                  <input
-                    type="text"
-                    id="senderTitle"
-                    name="senderTitle"
-                    value={formData.senderTitle}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Marketing Director"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="senderCompany" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="senderCompany" className="block text-sm font-medium">
                     Your Company
                   </label>
                   <input
@@ -95,13 +124,13 @@ export default function BusinessLetterGenerator() {
                     value={formData.senderCompany}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Acme Inc."
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="senderEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="senderEmail" className="block text-sm font-medium">
                     Your Email
                   </label>
                   <input
@@ -111,38 +140,8 @@ export default function BusinessLetterGenerator() {
                     value={formData.senderEmail}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="john@example.com"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="senderPhone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Your Phone
-                  </label>
-                  <input
-                    type="tel"
-                    id="senderPhone"
-                    name="senderPhone"
-                    value={formData.senderPhone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <label htmlFor="senderAddress" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Your Address
-                  </label>
-                  <textarea
-                    id="senderAddress"
-                    name="senderAddress"
-                    value={formData.senderAddress}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="123 Business St, Suite 101, City, State, ZIP"
                   />
                 </div>
               </div>
@@ -152,22 +151,43 @@ export default function BusinessLetterGenerator() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 rounded-md bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white font-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/25 flex justify-center items-center"
+                className="w-full py-3 px-4 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium flex justify-center items-center transition-colors"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Submitting...
+                    Generating Letter...
                   </>
                 ) : (
-                  "Submit Sender Information"
+                  "Generate Sample Letter"
                 )}
               </button>
             </div>
           </form>
+
+          {imageUrl && (
+            <div className="mt-8 space-y-4">
+              <h2 className="text-xl font-semibold">Your Generated Letter</h2>
+              <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
+                <img 
+                  src={imageUrl} 
+                  alt="Generated business letter" 
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="flex justify-center">
+                <a
+                  href={imageUrl}
+                  download="business-letter.png"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                >
+                  Download Letter
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   )
 }
-
