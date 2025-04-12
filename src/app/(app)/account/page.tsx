@@ -10,6 +10,6 @@ export default async function Account() {
   if (!session) return redirect('/sign-in')
 
   const user = session.user as User
-
+ 
   return <AccountForm user={user} />
 }

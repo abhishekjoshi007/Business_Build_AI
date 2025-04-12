@@ -37,13 +37,14 @@ export async function GET(
     const user = await collection.findOne({
       _id: new ObjectId(id),
     })
+    console.log(user)
     if (!user) {
       return NextResponse.json({ message: 'No User found.' }, { status: 401 })
     }   
 
     user.model = user.model ? user.model : OpenAIModels[OpenAIModelID.GPT_3_5]
     delete user.password
-
+  
     return NextResponse.json(user, { status: 200 })
   } catch (error:any) {
     return NextResponse.json({ message: error.message }, { status: 500 })

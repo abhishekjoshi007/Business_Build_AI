@@ -6,9 +6,11 @@ export interface User {
   password: string
   model: OpenAIModel
   role: 'admin' | 'user'
+  credits: number
 }
 
 export interface UserUpdates {
   email: string
   model: OpenAIModel
+  credits?: number
 }

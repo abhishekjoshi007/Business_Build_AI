@@ -3,10 +3,12 @@
 import { useState } from "react"
 import { ArrowLeft, Mail, Loader2 } from "lucide-react"
 import Link from "next/link"
-
+import { redirect } from 'next/navigation'
 export default function BusinessLetterGenerator() {
+
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [creditsRemaining, setCreditsRemaining] = useState<number | null>(null)
   const [formData, setFormData] = useState({
     senderName: "",
     senderCompany: "",
@@ -44,28 +46,33 @@ export default function BusinessLetterGenerator() {
       Include subtle borders or divider lines if appropriate. 
       Make sure all text is clearly readable.`
 
-      const response = await fetch("https://api.openai.com/v1/images/generations", {
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          type: "image",
           prompt,
-          n: 1,
-          size: "1024x1024",
-          model: "dall-e-3",
-          quality: "standard",
-          style: "natural"
+          imageSize: "1024x1024"
         })
       })
-
+      if (response.status === 403) {
+        redirect('/plans')
+        return
+      }
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`)
-      }
+      }  
+     
 
       const data = await response.json()
-      setImageUrl(data.data[0].url)
+      if (data.error === 'Insufficient credits') {
+        alert('You have run out of credits. Please contact support to get more credits.')
+        return
+      }
+      setImageUrl(data.result)
+      setCreditsRemaining(data.creditsRemaining)
     } catch (error) {
       console.error("Error generating letter:", error)
       alert("Failed to generate letter. Please try again.")
@@ -87,6 +94,11 @@ export default function BusinessLetterGenerator() {
         <div className="flex items-center mb-8">
           <Mail className="w-8 h-8 text-purple-600 mr-3" />
           <h1 className="text-3xl font-bold">Business Letter Generator</h1>
+          {creditsRemaining !== null && (
+            <div className="ml-auto text-sm text-gray-600 dark:text-gray-400">
+              Credits remaining: {creditsRemaining}
+            </div>
+          )}
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">

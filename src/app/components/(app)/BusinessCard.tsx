@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { CreditCard, Loader2 } from "lucide-react"
+import { redirect } from "next/navigation"
 
 export default function BusinessCardGenerator() {
   const [loading, setLoading] = useState(false)
@@ -58,41 +59,44 @@ export default function BusinessCardGenerator() {
     setImageUrl(null) // Reset the image URL before generating a new one
     try {
       // Construct the prompt for the image generation
-      const prompt = `Create a professional ${formData.style} style single-sided business card with ${formData.color} as the primary color. 
-      Include the following details:
+      const prompt = `Generate a professional single-sided rectangular business card in ${formData.style} style with ${formData.color} as the primary color. 
+      The card should be a simple rectangular design (3.5 x 2 inches proportion) without any mockup elements like shadows, hands, or backgrounds. 
+      Include these details clearly arranged on the card:
       - Name: ${formData.name}
       - Title: ${formData.title}
       - Company: ${formData.company}
-      - Description: ${formData.description}
       - Email: ${formData.email}
-      - Phone: ${formData.phone}${formData.website ? `  - Website: ${formData.website}` : ''}
-      ${formData.address ? `  - Address: ${formData.address}` : ''}
+      - Phone: ${formData.phone}
+      ${formData.website ? `- Website: ${formData.website}` : ''}
+      ${formData.address ? `- Address: ${formData.address}` : ''}
       
-      The design should be clean, professional, and match the ${formData.style} style. 
-      Use a color scheme based on ${formData.color} and ensure all text is readable. The card must be strictly single-sided.`
+      The design should be clean, professional, and strictly single-sided with all text clearly readable. 
+      Use a color palette based on ${formData.color} and maintain proper business card proportions. 
+      Do not include any mockup elements - just the flat rectangular card design.`
 
-      // Call the OpenAI API
-      const response = await fetch("https://api.openai.com/v1/images/generations", {
+      // Call our backend API
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          type: "image",
           prompt,
-          n: 1, // Number of images to generate
-          size: "1024x1024", // You might want to use "512x512" for business cards
-          model: "dall-e-3", // Use the latest model
-          quality: "standard", // Or "hd" for higher quality
-          style: "natural" // Or "vivid" for more artistic
+          imageSize: "1024x1024"
         })
       })
-
+      if (response.status === 403) {
+        redirect('/plans')
+         return
+       }
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`)
       }
 
       const data = await response.json()
+
+    
       const generatedImageUrl = data.data[0].url
       setImageUrl(generatedImageUrl) // Set the generated image URL
     } catch (error) {

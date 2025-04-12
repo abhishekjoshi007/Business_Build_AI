@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { Lightbulb, Loader2 } from "lucide-react"
+import { redirect } from "next/navigation"
 
 export default function BrandNameGenerator() {
   const [loading, setLoading] = useState(false)
@@ -38,22 +39,25 @@ export default function BrandNameGenerator() {
       ${formData.mustInclude ? `Must include: ${formData.mustInclude}.` : ''}
       Provide the names in a numbered list.`
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-          max_tokens: 500
+          type: "text",
+          prompt
         })
       })
+ 
+      if (response.status === 403) {
+        redirect('/plans')
+        return
+      }
 
       const data = await response.json()
-      const names = data.choices[0]?.message?.content
+     
+      const names = data.result
       setGeneratedNames(names) // Set the generated names
     } catch (error) {
       console.error("Error generating brand names:", error)

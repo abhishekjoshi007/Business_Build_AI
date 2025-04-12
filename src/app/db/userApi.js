@@ -80,7 +80,8 @@ async function create(params) {
       role: params.email === "kitchenbeats@gmail.com" ? "admin" : "user",
       model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
       openAiKeyAdded: false,
-      connectedAccountId: ""
+      connectedAccountId: "",
+      credits: 100  // Adding initial credits
     });
     return {
       _id: data.insertedId,
@@ -90,12 +91,14 @@ async function create(params) {
       model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
       openAiKeyAdded: false,
       connectedAccountId: "",
+      credits: 100  // Including credits in the return object
     };
   } catch (error) {
     console.error("Error creating user:", error);
     throw new Error(error);
   }
 }
+
 async function googleauth(params) {
   const client = await clientPromise;
   const userCollection = client.db(dbName).collection("users");
@@ -112,6 +115,7 @@ async function googleauth(params) {
       email: params.email,
       role: params.email === "kitchenbeats@gmail.com" ? "admin" : "user",
       model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
+      credits: 100  // Adding initial credits for Google auth users
     });
     return {
       _id: data.insertedId,
@@ -119,6 +123,7 @@ async function googleauth(params) {
       email: params.email,
       role: params.email === "kitchenbeats@gmail.com" ? "admin" : "user",
       model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
+      credits: 100  // Including credits in the return object
     };
   } catch (error) {
     console.error("Error creating user:", error);
