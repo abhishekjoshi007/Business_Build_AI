@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useReducer, useState } from "react"
 import { Lightbulb, Loader2 } from "lucide-react"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 export default function BrandNameGenerator() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     industry: "",
@@ -51,7 +52,7 @@ export default function BrandNameGenerator() {
       })
  
       if (response.status === 403) {
-        redirect('/plans')
+       router.push('/plans')
         return
       }
 

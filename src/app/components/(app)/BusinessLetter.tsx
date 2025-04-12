@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { ArrowLeft, Mail, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { redirect } from 'next/navigation'
+import { redirect , useRouter } from 'next/navigation'
 export default function BusinessLetterGenerator() {
-
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [creditsRemaining, setCreditsRemaining] = useState<number | null>(null)
@@ -57,14 +57,14 @@ export default function BusinessLetterGenerator() {
           imageSize: "1024x1024"
         })
       })
+      console.log(response.status)
       if (response.status === 403) {
-        redirect('/plans')
-        return
+         router.push('/plans')
+         return 
       }
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`)
       }  
-     
 
       const data = await response.json()
       if (data.error === 'Insufficient credits') {

@@ -3,9 +3,10 @@
 import type React from "react"
 import { useState } from "react"
 import { CreditCard, Loader2 } from "lucide-react"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export default function BusinessCardGenerator() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
@@ -87,7 +88,7 @@ export default function BusinessCardGenerator() {
         })
       })
       if (response.status === 403) {
-        redirect('/plans')
+         router.push('/plans') 
          return
        }
       if (!response.ok) {

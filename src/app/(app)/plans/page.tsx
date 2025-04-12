@@ -1,4 +1,4 @@
-import { Pricing } from '@/app/components/(app)/Plans'
+import Pricing  from '@/app/components/(app)/Plans'
 export const runtime = 'edge'
 
 export default async function Page() {

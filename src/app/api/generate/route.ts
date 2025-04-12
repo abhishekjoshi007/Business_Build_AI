@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const userCollection = client.db(dbName).collection('users');
     const user = await userCollection.findOne({ email: session.user?.email });
     console.log(user?.credits)
-    if (!user || user.credits <= 120) {
+    if (!user || user.credits <= 0) {
       return NextResponse.json({ error: 'Insufficient credits' }, { status: 403 });
     }
 
