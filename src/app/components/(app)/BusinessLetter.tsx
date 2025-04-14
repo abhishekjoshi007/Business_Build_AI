@@ -36,15 +36,11 @@ export default function BusinessLetterGenerator() {
       The letter should include:
       1. Date line (show "[Date]")
       2. Recipient address block (show "[Recipient's Address]")
-      3. Formal salutation ("Dear [Recipient's Name],")
-      4. Three paragraph body with placeholder text (use "Lorem ipsum...")
-      5. Closing ("Sincerely,")
-      6. Space for signature
-      7. Sender's name and title
       
-      Use a clean, professional design with black text on white background. 
-      Include subtle borders or divider lines if appropriate. 
-      Make sure all text is clearly readable.`
+      Use a clean, professional design with black text on white background.
+      Include subtle borders or divider lines if appropriate.
+      Make sure all text is clearly readable.
+      Do not include any content or body text - only the letterhead and address structure.`
 
       const response = await fetch("/api/generate", {
         method: "POST",

@@ -60,20 +60,26 @@ export default function BusinessCardGenerator() {
     setImageUrl(null) // Reset the image URL before generating a new one
     try {
       // Construct the prompt for the image generation
-      const prompt = `Generate a professional single-sided rectangular business card in ${formData.style} style with ${formData.color} as the primary color. 
-      The card should be a simple rectangular design (3.5 x 2 inches proportion) without any mockup elements like shadows, hands, or backgrounds. 
-      Include these details clearly arranged on the card:
-      - Name: ${formData.name}
-      - Title: ${formData.title}
-      - Company: ${formData.company}
-      - Email: ${formData.email}
-      - Phone: ${formData.phone}
-      ${formData.website ? `- Website: ${formData.website}` : ''}
-      ${formData.address ? `- Address: ${formData.address}` : ''}
-      
-      The design should be clean, professional, and strictly single-sided with all text clearly readable. 
-      Use a color palette based on ${formData.color} and maintain proper business card proportions. 
-      Do not include any mockup elements - just the flat rectangular card design.`
+      const prompt = `Create a flat, front-facing business card design. Do not render any 3D perspective, shadow, background, or hand. Only show the **single-sided** business card, displayed directly from above (top-down view), with no angle or tilt.
+
+Size ratio should be 3.5 x 2 inches (standard business card).
+
+Design style: ${formData.style}  
+Primary color: ${formData.color}  
+
+Include the following text details:
+- Name: ${formData.name}
+- Title: ${formData.title}
+- Company: ${formData.company}
+- Email: ${formData.email}
+- Phone: ${formData.phone}
+${formData.website ? `- Website: ${formData.website}` : ''}
+${formData.address ? `- Address: ${formData.address}` : ''}
+
+The design must be **professional, clean, and minimal**.  
+Avoid any perspective, shadows, mockups, or surroundings.  
+The output should be a simple, flat image of a **single-sided business card only**.
+`
 
       // Call our backend API
       const response = await fetch("/api/generate", {
@@ -98,7 +104,7 @@ export default function BusinessCardGenerator() {
       const data = await response.json()
 
     
-      const generatedImageUrl = data.data[0].url
+      const generatedImageUrl = data.result
       setImageUrl(generatedImageUrl) // Set the generated image URL
     } catch (error) {
       console.error("Error generating business card:", error)

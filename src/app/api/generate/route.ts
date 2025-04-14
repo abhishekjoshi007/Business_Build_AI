@@ -12,17 +12,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check user credits
     const client = await import('@/app/lib/mongodb').then(mod => mod.default);
     const dbName = process.env.MONGODB_DB;
     const userCollection = client.db(dbName).collection('users');
     const user = await userCollection.findOne({ email: session.user?.email });
-    console.log(user?.credits)
+
     if (!user || user.credits <= 0) {
       return NextResponse.json({ error: 'Insufficient credits' }, { status: 403 });
     }
 
-    const { type, prompt, model = 'gpt-4', imageModel = 'dall-e-3', imageSize = '1024x1024' } = await req.json();
+    const {
+      type,
+      prompt,
+      model = 'gpt-4',
+      imageModel = 'dall-e-3',
+      imageSize = '1024x1024',
+    } = await req.json();
 
     if (!type || !prompt) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -43,11 +48,12 @@ export async function POST(req: NextRequest) {
       apiEndpoint = `${OPENAI_API_URL}/images/generations`;
       requestBody = {
         prompt,
+        model: imageModel,
         n: 1,
         size: imageSize,
-        model: imageModel,
-        quality: 'standard',
-        style: 'natural'
+        quality: 'standard',           // Optional: "hd" for high-res (only with DALL-E 3)
+        response_format: 'url',        // Optional (default is "url")
+        user: session.user?.email      // Optional: for abuse tracking
       };
     } else {
       return NextResponse.json({ error: 'Invalid generation type' }, { status: 400 });
@@ -57,7 +63,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify(requestBody)
     });
@@ -68,7 +74,7 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await response.json();
-    
+
     // Deduct 1 credit after successful generation
     await userCollection.updateOne(
       { email: session.user?.email },
@@ -76,7 +82,9 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({
-      result: type === 'text' ? data.choices[0]?.message?.content : data.data[0].url,
+      result: type === 'text'
+        ? data.choices[0]?.message?.content
+        : data.data[0]?.url,
       creditsRemaining: user.credits - 1
     });
 
