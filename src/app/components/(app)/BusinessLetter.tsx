@@ -1,74 +1,107 @@
 "use client"
 
-import { useState } from "react"
-import { ArrowLeft, Mail, Loader2 } from "lucide-react"
+import { useState, useRef } from "react"
+import { ArrowLeft, Mail, Loader2, Download } from "lucide-react"
 import Link from "next/link"
-import { redirect , useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { LetterPreview } from "@/app/lib/branding/letter"
+import html2canvas from "html2canvas"
+
 export default function BusinessLetterGenerator() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [downloadLoading, setDownloadLoading] = useState(false)
+  const [isGenerated, setIsGenerated] = useState(false)
+  const letterRef = useRef<HTMLDivElement>(null)
+  const [letterData, setLetterData] = useState<any>(null)
   const [creditsRemaining, setCreditsRemaining] = useState<number | null>(null)
   const [formData, setFormData] = useState({
     senderName: "",
     senderCompany: "",
-    senderEmail: ""
+    senderEmail: "",
+    senderPhone: "",
+    senderWebsite: "",
+    style: "modern" as "modern" | "classic" | "minimalist" | "premium" | "corporate" | "executive",
+    accentColor: "#6D28D9",
+    includeLetterhead: true,
+    includeSignature: true,
+    dateFormat: "standard"
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [displayData, setDisplayData] = useState({
+    senderName: "",
+    senderCompany: "",
+    senderEmail: "",
+    senderPhone: "",
+    senderWebsite: "",
+    style: "modern" as "modern" | "classic" | "minimalist" | "premium" | "corporate" | "executive",
+    accentColor: "#6D28D9",
+    includeLetterhead: true,
+    includeSignature: true,
+    dateFormat: "standard"
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleDownload = async () => {
+    if (!letterRef.current) return
+    
+    try {
+      setDownloadLoading(true)
+      
+      const canvas = await html2canvas(letterRef.current, {
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      })
+      
+      const link = document.createElement('a')
+      link.download = `business-letter-${formData.senderName || 'design'}.png`
+      link.href = canvas.toDataURL('image/png')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Download failed:', error)
+      alert('Failed to download image. Please try again.')
+    } finally {
+      setDownloadLoading(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setImageUrl(null)
 
     try {
-      const prompt = `Generate a professional business letter template on A4 size paper with these details:
-      
-      Letterhead:
-      - Company: ${formData.senderCompany}
-      - Name: ${formData.senderName}
-      - Email: ${formData.senderEmail}
-      
-      The letter should include:
-      1. Date line (show "[Date]")
-      2. Recipient address block (show "[Recipient's Address]")
-      
-      Use a clean, professional design with black text on white background.
-      Include subtle borders or divider lines if appropriate.
-      Make sure all text is clearly readable.
-      Do not include any content or body text - only the letterhead and address structure.`
-
-      const response = await fetch("/api/generate", {
+      const response = await fetch("/api/generate/letter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          type: "image",
-          prompt,
-          imageSize: "1024x1024"
-        })
+        body: JSON.stringify(formData)
       })
-      console.log(response.status)
+
       if (response.status === 403) {
-         router.push('/plans')
-         return 
+        router.push('/plans')
+        return
       }
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`)
-      }  
+      }
 
       const data = await response.json()
       if (data.error === 'Insufficient credits') {
         alert('You have run out of credits. Please contact support to get more credits.')
         return
       }
-      setImageUrl(data.result)
+      setDisplayData(formData)
+      setLetterData(data.result)
       setCreditsRemaining(data.creditsRemaining)
+      setIsGenerated(true)
     } catch (error) {
       console.error("Error generating letter:", error)
       alert("Failed to generate letter. Please try again.")
@@ -101,10 +134,10 @@ export default function BusinessLetterGenerator() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <h2 className="text-xl font-semibold border-b border-gray-300 dark:border-gray-700 pb-2">
-                Required Information
+                Sender Information
               </h2>
 
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="senderName" className="block text-sm font-medium">
                     Your Name
@@ -152,6 +185,112 @@ export default function BusinessLetterGenerator() {
                     placeholder="john@example.com"
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="senderPhone" className="block text-sm font-medium">
+                    Your Phone
+                  </label>
+                  <input
+                    type="tel"
+                    id="senderPhone"
+                    name="senderPhone"
+                    value={formData.senderPhone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="+1 (555) 123-4567"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="senderWebsite" className="block text-sm font-medium">
+                    Your Website
+                  </label>
+                  <input
+                    type="url"
+                    id="senderWebsite"
+                    name="senderWebsite"
+                    value={formData.senderWebsite}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="https://example.com"
+                  />
+                </div>
+              </div>
+            </div>
+
+
+
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold border-b border-gray-300 dark:border-gray-700 pb-2">
+                Letter Details
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="subject" className="block text-sm font-medium">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Meeting Request"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="style" className="block text-sm font-medium">
+                    Letter Style
+                  </label>
+                  <select
+                    id="style"
+                    name="style"
+                    value={formData.style}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="modern">Modern</option>
+                    <option value="classic">Classic</option>
+                    <option value="minimalist">Minimalist</option>
+                    <option value="premium">Premium</option>
+                    <option value="corporate">Corporate</option>
+                    <option value="executive">Executive</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="accentColor" className="block text-sm font-medium">
+                    Accent Color
+                  </label>
+                  <input
+                    type="color"
+                    id="accentColor"
+                    name="accentColor"
+                    value={formData.accentColor}
+                    onChange={handleChange}
+                    className="w-full h-10 px-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="dateFormat" className="block text-sm font-medium">
+                    Date Format
+                  </label>
+                  <select
+                    id="dateFormat"
+                    name="dateFormat"
+                    value={formData.dateFormat}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="standard">Standard (January 1, 2024)</option>
+                    <option value="formal">Formal (1st January, 2024)</option>
+                    <option value="iso">ISO (2024-01-01)</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -167,30 +306,42 @@ export default function BusinessLetterGenerator() {
                     Generating Letter...
                   </>
                 ) : (
-                  "Generate Sample Letter"
+                  "Generate Letter"
                 )}
               </button>
             </div>
           </form>
 
-          {imageUrl && (
+          {isGenerated && letterData && (
             <div className="mt-8 space-y-4">
               <h2 className="text-xl font-semibold">Your Generated Letter</h2>
-              <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-                <img 
-                  src={imageUrl} 
-                  alt="Generated business letter" 
-                  className="w-full h-auto"
-                />
+              <div ref={letterRef} className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-white p-4">
+                <LetterPreview data={displayData} />
               </div>
-              <div className="flex justify-center">
-                <a
-                  href={imageUrl}
-                  download="business-letter.png"
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={handleDownload}
+                  disabled={downloadLoading}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center"
                 >
-                  Download Letter
-                </a>
+                  {downloadLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download as Image
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  Print Letter
+                </button>
               </div>
             </div>
           )}
