@@ -68,6 +68,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           test: true
         }),
       });
+      if (res.status === 403) {
+        router.push('/plans')
+        return
+      }
 
       if (!res.ok) {
         const {message} = await res.json();

@@ -1,11 +1,9 @@
 "use client"
-
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Sparkles } from "lucide-react"
 import { Loader } from "lucide-react"
-import { generateAIContent, generateAIImage } from "@/utils/functions/index"
-
+import { useRouter } from "next/navigation"
 type ContentType = "blog" | "social-post" | "script" | "article" | "email"
 
 interface GeneratedContent {
@@ -16,6 +14,7 @@ interface GeneratedContent {
 }
 
 export default function AIContentGenerator() {
+  const router = useRouter()
   const { theme } = useTheme()
   const [title, setTitle] = useState("")
   const [contentType, setContentType] = useState<ContentType | "">("")
@@ -29,25 +28,37 @@ export default function AIContentGenerator() {
     setIsGenerating(true)
 
     try {
-      // First generate content and image prompt together
-      const { content, imagePrompt } = await generateAIContent(
-        title,
-        contentType as ContentType,
-        description
-      )
+      const response = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          contentType,
+          description,
+        }),
+      });
 
-      // Then generate the image using the created prompt
-      const imageUrl = await generateAIImage(imagePrompt)
+      if (response.status === 403) {
+        router.push('/plans')
+        return
+      }
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate content');
+      }
 
       setGeneratedContent({
         title,
         type: contentType as ContentType,
-        content,
-        imageUrl,
+        content: data.content,
+        imageUrl: data.imageUrl,
       })
 
       // Optional: show the image prompt to users
-      console.log("Generated image prompt:", imagePrompt)
     } catch (error) {
       console.error("Generation failed:", error)
       // Fallback with the description as content
@@ -154,7 +165,7 @@ export default function AIContentGenerator() {
                 : "bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600"
             }`}
             onClick={handleGenerate}
-            disabled={!title || !contentType || !description || isGenerating}
+            disabled={!title || !contentType || !description }
           >
             {isGenerating ? (
               <>
@@ -196,14 +207,7 @@ export default function AIContentGenerator() {
               </div>
             </div>
 
-            <div className="flex justify-end mt-4">
-              <button className="mr-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
-                Edit Content
-              </button>
-              <button className="px-4 py-2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-md transition-colors duration-200">
-                Download
-              </button>
-            </div>
+          
           </div>
         </div>
       )}

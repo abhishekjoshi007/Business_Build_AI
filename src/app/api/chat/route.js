@@ -3,7 +3,8 @@ import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { BufferWindowMemory, ChatMessageHistory } from "langchain/memory";
 import { AIMessage, BaseMessage, HumanMessage } from "langchain/schema";
-
+import { authOptions } from '../auth/[...nextauth]/authOptions';
+import { env } from "@/env.mjs";
 import { LangChainStream } from "@/app/lib/langchain";
 import { llmTools } from "@/app/lib/tools";
 import { NextResponse } from "next/server";
@@ -17,6 +18,24 @@ export async function POST(req) {
   console.log("User token fetched", user);
   const token = await getToken({req, raw:true});
   console.log("Raw token fetched", token);
+ 
+  
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Get MongoDB client
+  const client = await import('@/app/lib/mongodb').then(mod => mod.default);
+  const dbName = process.env.MONGODB_DB;
+  const userCollection = client.db(dbName).collection('users');
+  
+  // Check user and credits
+  const usercred = await userCollection.findOne({ email: session.user?.email });
+  if (!usercred || usercred.credits <= 0) {
+    return NextResponse.json({ error: 'Insufficient credits' }, { status: 403 });
+  }
+
 
   if (!user || !user?._id) {
       console.log("User is required but not found");

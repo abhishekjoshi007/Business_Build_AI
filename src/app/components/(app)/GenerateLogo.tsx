@@ -2,13 +2,14 @@
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Download, Loader2, RefreshCw, Image, Moon, Sun, Sparkles } from "lucide-react"
-
+import { useRouter } from "next/router"
 interface LogoData {
   image: string;
   seed: number;
 }
 
 const GenerateLogo: React.FC = () => {
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [companyName, setCompanyName] = useState("")
   const [industry, setIndustry] = useState("")
@@ -56,7 +57,10 @@ const GenerateLogo: React.FC = () => {
           steps: 4
         }),
       });
-  
+      if (response.status === 403) {
+        router.push('/plans')
+        return
+      }
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to generate logo");

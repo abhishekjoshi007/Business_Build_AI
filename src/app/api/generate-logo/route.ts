@@ -1,10 +1,28 @@
 import { NextResponse } from 'next/server';
 import { HfInference } from '@huggingface/inference';
-
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 const hf = new HfInference(process.env.NEXT_PUBLIC_HF_API_KEY);
 
 export async function POST(request: Request) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Get MongoDB client
+    const client = await import('@/app/lib/mongodb').then(mod => mod.default);
+    const dbName = process.env.MONGODB_DB;
+    const userCollection = client.db(dbName).collection('users');
+    
+    // Check user and credits
+    const user = await userCollection.findOne({ email: session.user?.email });
+    if (!user || user.credits <= 0) {
+      return NextResponse.json({ error: 'Insufficient credits' }, { status: 403 });
+    }
+
     const { prompt, seed, width = 512, height = 512, steps = 4 } = await request.json();
     
     if (!prompt) {
@@ -49,9 +67,16 @@ export async function POST(request: Request) {
     const imageBuffer = await response.arrayBuffer();
     const base64Image = Buffer.from(imageBuffer).toString('base64');
     
+    // Deduct 1 credit after successful generation
+    await userCollection.updateOne(
+      { email: session.user?.email },
+      { $inc: { credits: -1 } }
+    );
+    
     return NextResponse.json({ 
       image: `data:image/png;base64,${base64Image}`,
-      seed: seed || Math.floor(Math.random() * 2147483647)
+      seed: seed || Math.floor(Math.random() * 2147483647),
+      creditsRemaining: user.credits - 1
     });
     
   } catch (error) {
