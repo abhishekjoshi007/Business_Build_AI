@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate style
-    const validStyles = ['modern', 'classic', 'minimalist'];
+    const validStyles = ['modern', 'classic', 'minimalist' , 'premium', 'corporate' , 'executive'];
     if (letterData.style && !validStyles.includes(letterData.style)) {
       return NextResponse.json({ error: 'Invalid letter style' }, { status: 400 });
     }
