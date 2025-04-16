@@ -8,7 +8,6 @@ import { llmTools } from "@/app/lib/tools";
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { chatbotSystemPrompt } from "@/app/config/chat" 
-
 export const runtime = "edge";
 
 export async function POST(req) {
