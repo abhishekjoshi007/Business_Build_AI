@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     // Google provider
-    GoogleProvider({
+    GoogleProvider({  
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
         session.user.customerId = token.customerId;
         session.user.openAiKeyAdded = token.openAiKeyAdded;
         session.user.role = token.role;
-
+        session.user.credits = token.credits
         if (token.email && !token.customerId) {
           try {
             const stripeCustomer = await getCustomerByEmail(token.email) as Stripe.Customer;
@@ -125,28 +125,24 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, user }) {
-      console.log("user:", user);
-      console.log("token:", token);
-
-      // If the user is available (i.e. during sign in),
-      // look up the database user using the email.
-      if (user) {
-        const dbUser = await users.getByEmail(user.email);
+    async jwt({ token, user, account }) {
+      // For both OAuth and credentials, fetch the full user record
+      if (user || token.email) {
+        const dbUser = await users.getByEmail(user?.email || token.email);
         if (dbUser) {
-          token._id = dbUser._id.toString();
-          token.name = dbUser.name;
-          token.email = dbUser.email;
-          token.model = dbUser.model;
-          token.customerId = dbUser.customerId;
-          token.openAiKeyAdded = dbUser.openAiKeyAdded;
-          token.role = dbUser.role;
-        } else {
-          // Fallback: set token._id to the user.id from nextauth.
-          token._id = user.id;
+          return {
+            ...token,
+            _id: dbUser._id.toString(),
+            name: dbUser.name,
+            email: dbUser.email,
+            model: dbUser.model,
+            customerId: dbUser.customerId,
+            openAiKeyAdded: dbUser.openAiKeyAdded,
+            role: dbUser.role,
+            credits: dbUser.credits // Make sure this is included
+          };
         }
       }
-
       return token;
     },
   },

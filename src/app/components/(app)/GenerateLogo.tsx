@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Download, Loader2, RefreshCw, Image, Moon, Sun, Sparkles } from "lucide-react"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 interface LogoData {
   image: string;
   seed: number;

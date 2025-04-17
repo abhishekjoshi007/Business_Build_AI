@@ -11,6 +11,7 @@ export interface User {
   openAiKeyAdded: boolean;
   customerId?: string;
   connectedAccountId?: string;
+  credits:Number
 }
 
 export interface UserUpdates {
@@ -20,4 +21,5 @@ export interface UserUpdates {
   openAiKeyAdded: boolean;
   role: "admin" | "user";
   connectedAccountId?: string;
+  credits:Number
 }

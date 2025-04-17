@@ -1,6 +1,7 @@
 import React from 'react'
 import NavBar from '../components/(app)/navbar'
-
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth]/authOptions'
 export const metadata = {
   title: 'Dashboard',
 }
@@ -10,7 +11,6 @@ export default async function Layout({
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <>
     <NavBar />
