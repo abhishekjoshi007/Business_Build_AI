@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { HfInference } from '@huggingface/inference';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '../auth/[...nextauth]/authOptions';
+
 const hf = new HfInference(process.env.NEXT_PUBLIC_HF_API_KEY);
 
 export async function POST(request: Request) {
