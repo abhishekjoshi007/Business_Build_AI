@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { ArrowLeft, Mail, Loader2, Download } from "lucide-react"
+import { ArrowLeft, Mail, Loader2, Download , FileSpreadsheet } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { LetterPreview } from "@/app/lib/branding/letter"
@@ -113,23 +113,10 @@ export default function BusinessLetterGenerator() {
   return (
     <div className="min-h-screen py-12 px-4 bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link href="/" className="flex items-center text-purple-600 hover:text-purple-800 dark:hover:text-purple-400">
-            <ArrowLeft className="w-5 h-5 mr-1" />
-            Back to Home
-          </Link>
-        </div>
-
-        <div className="flex items-center mb-8">
-          <Mail className="w-8 h-8 text-purple-600 mr-3" />
-          <h1 className="text-3xl font-bold">Business Letter Generator</h1>
-          {creditsRemaining !== null && (
-            <div className="ml-auto text-sm text-gray-600 dark:text-gray-400">
-              Credits remaining: {creditsRemaining}
-            </div>
-          )}
-        </div>
-
+      <div className="flex items-center mb-8">
+      <FileSpreadsheet className="w-8 h-8 text-purple-600 mr-3" />
+            <h1 className="text-3xl text-black dark:text-white font-bold">Business Letter Generator</h1>
+          </div>
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-300 dark:border-gray-800">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
