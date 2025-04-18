@@ -48,7 +48,7 @@ export default function ServicesPage() {
     return null
   }
   return (
-    <div className="min-h-screen py-12 px-4 border-gray-900  bg-white text-gray-900 dark:bg-black dark:text-white">
+    <div className="pt-36 px-4 border-gray-900  bg-white text-gray-900 dark:bg-black dark:text-white">
       <div className="">
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
