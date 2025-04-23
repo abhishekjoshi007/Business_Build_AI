@@ -63,6 +63,7 @@ async function getByEmail(email) {
 }
 
 async function create(params) {
+  console.log("accnt created")
   const client = await clientPromise;
   const userCollection = client.db(dbName).collection("users");
 

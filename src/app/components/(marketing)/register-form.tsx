@@ -49,7 +49,7 @@ export default function RegisterForm() {
       toast.error(body)
     }
 
-    router.push('/home')
+    router.push('/login')
   }
 
   return (

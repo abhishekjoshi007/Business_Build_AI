@@ -7,7 +7,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 export default async function Account() {
 
   const session = (await getServerSession(authOptions)) as any
-  if (!session) return redirect('/sign-in')
+  if (!session) return redirect('/login')
 
   const user = session.user as User
  

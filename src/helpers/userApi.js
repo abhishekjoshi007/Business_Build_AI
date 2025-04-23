@@ -59,6 +59,7 @@ async function create(params) {
       password: bcrypt.hashSync(params.password, 10),
       role: params.email === 'kitchenbeats@gmail.com' ? 'admin' : 'user',
       model: OpenAIModels[process.env.NEXT_PUBLIC_DEFAULT_MODEL],
+      credits:100
     })
     return result
   } catch (error) {
