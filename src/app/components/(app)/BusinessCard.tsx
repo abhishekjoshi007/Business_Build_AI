@@ -6,9 +6,11 @@ import { CreditCard, Loader2, Download } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { CardPreview } from "@/app/lib/branding/card"
 import html2canvas from "html2canvas"
+import { useSession } from "next-auth/react"
 
 export default function BusinessCardGenerator() {
   const router = useRouter()
+  const { update } = useSession() // Get the update function
   const [loading, setLoading] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
   const [isGenerated, setIsGenerated] = useState(false)
@@ -94,7 +96,9 @@ export default function BusinessCardGenerator() {
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`)
       }
-
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
+      }
       // The response will contain the card data (no image URL needed now)
       const data = await response.json()
       setDisplayData(formData) // Update display data with current form data
@@ -104,7 +108,7 @@ export default function BusinessCardGenerator() {
       alert("Failed to generate business card. Please try again.")
     } finally {
       setLoading(false)
-    }
+    } 
   }
 
   return (

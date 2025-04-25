@@ -3,9 +3,11 @@
 import React, { useReducer, useState } from "react"
 import { Lightbulb, Loader2 } from "lucide-react"
 import { redirect, useRouter } from "next/navigation"
-
+import { useSession } from "next-auth/react"
 export default function BrandNameGenerator() {
   const router = useRouter()
+    const { update } = useSession() // Get the update function
+  
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     industry: "",
@@ -55,7 +57,9 @@ export default function BrandNameGenerator() {
        router.push('/plans')
         return
       }
-
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
+      }
       const data = await response.json()
      
       const names = data.result

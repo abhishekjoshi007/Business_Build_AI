@@ -6,9 +6,11 @@ import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { LetterPreview } from "@/app/lib/branding/letter"
 import html2canvas from "html2canvas"
-
+import { useSession } from "next-auth/react"
 export default function BusinessLetterGenerator() {
   const router = useRouter()
+ const { update } = useSession() // Get the update function
+  
   const [loading, setLoading] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
   const [isGenerated, setIsGenerated] = useState(false)
@@ -92,7 +94,9 @@ export default function BusinessLetterGenerator() {
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`)
       }
-
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
+      }
       const data = await response.json()
       if (data.error === 'Insufficient credits') {
         alert('You have run out of credits. Please contact support to get more credits.')

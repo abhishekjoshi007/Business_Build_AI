@@ -5,6 +5,7 @@ import { Sparkles } from "lucide-react"
 import { Loader } from "lucide-react"
 import { useRouter } from "next/navigation"
 type ContentType = "blog" | "social-post" | "script" | "article" | "email"
+import { useSession } from "next-auth/react"
 
 interface GeneratedContent {
   title: string
@@ -14,7 +15,8 @@ interface GeneratedContent {
 }
 
 export default function AIContentGenerator() {
-  const router = useRouter()
+  const router = useRouter() 
+     const { update } = useSession() // Get the update function
   const { theme } = useTheme()
   const [title, setTitle] = useState("")
   const [contentType, setContentType] = useState<ContentType | "">("")
@@ -50,7 +52,9 @@ export default function AIContentGenerator() {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to generate content');
       }
-
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
+      }
       setGeneratedContent({
         title,
         type: contentType as ContentType,

@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Download, Loader2, RefreshCw, Image, AlertCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 interface LogoData {
   imageUrl: string;
@@ -22,6 +23,7 @@ const GenerateLogo: React.FC = () => {
   const [error, setError] = useState("")
   const [generationCount, setGenerationCount] = useState(0)
   const [credits, setCredits] = useState<number | null>(null)
+  const { update } = useSession() // Get the update function
 
   const handleGenerateLogo = async () => {
     const seed = Math.floor(Math.random() * 2147483647)
@@ -37,6 +39,7 @@ const GenerateLogo: React.FC = () => {
         Create a professional business logo for "${companyName}"${industry ? ` in the ${industry} industry` : ""}.
         Style: ${designStyle}.
         Colors: ${colorScheme || "professional color palette"}.
+        Make Sure the ${companyName} is in the logo correctly
         ${extraDetails}
       `.replace(/\n\s+/g, " ").trim()
 
@@ -62,7 +65,9 @@ const GenerateLogo: React.FC = () => {
           "Failed to generate logo. Please try again."
         )
       }
-
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
+      }    
       if (!data.imageUrl) {
         throw new Error("No image URL returned from server")
       }
