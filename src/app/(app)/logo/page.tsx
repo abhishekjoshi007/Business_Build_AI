@@ -1,6 +1,5 @@
 import GenerateLogo from '@/app/components/(app)/GenerateLogo'
 
-export const runtime = 'edge'
 
 export default async function Page() {
   return (

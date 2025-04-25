@@ -1,49 +1,45 @@
 "use client"
 import { useState } from "react"
 import { useTheme } from "next-themes"
-import { Download, Loader2, RefreshCw, Image, Moon, Sun, Sparkles } from "lucide-react"
+import { Download, Loader2, RefreshCw, Image, AlertCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
+
 interface LogoData {
-  image: string;
+  imageUrl: string;
   seed: number;
+  creditsRemaining?: number;
 }
 
 const GenerateLogo: React.FC = () => {
   const router = useRouter()
-  const { theme, setTheme } = useTheme()
-  const [companyName, setCompanyName] = useState("")
-  const [industry, setIndustry] = useState("")
-  const [colorScheme, setColorScheme] = useState("")
+  const [companyName, setCompanyName] = useState("Alembic")
+  const [industry, setIndustry] = useState("pharmaceuticals")
+  const [colorScheme, setColorScheme] = useState("red and black")
   const [designStyle, setDesignStyle] = useState("minimalist")
   const [extraDetails, setExtraDetails] = useState("")
   const [logoData, setLogoData] = useState<LogoData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [generationCount, setGenerationCount] = useState(0)
+  const [credits, setCredits] = useState<number | null>(null)
 
   const handleGenerateLogo = async () => {
-    const seed = Math.floor(Math.random() * 2147483647); // Generate a new random seed
+    const seed = Math.floor(Math.random() * 2147483647)
     if (!companyName && !extraDetails) {
-      setError("Please enter a company name or extra details");
-      return;
+      setError("Please enter a company name or extra details")
+      return
     }
-    setError("");
-    setLoading(true);
-    setGenerationCount((prev) => prev + 1);
-  
-    const basePrompt = `
-      Create a professional business logo for "${companyName}"${industry ? ` in the ${industry} industry` : ""}.
-      Style: ${designStyle}.
-      Colors: ${colorScheme || "professional color palette"}.
-      Must be: vector art style, clean edges, transparent background, centered, symmetrical.
-      Design elements: abstract or symbolic representation, no photorealistic elements.
-      Technical requirements: high contrast, scalable, works in single color.
-      Avoid: text, signatures, watermarks, complex scenes, photographs.
-      Purpose: professional business branding and identity.
-      ${extraDetails}
-    `.replace(/\n\s+/g, " ").trim();
-  
+    setError("")
+    setLoading(true)
+
     try {
+      const basePrompt = `
+        Create a professional business logo for "${companyName}"${industry ? ` in the ${industry} industry` : ""}.
+        Style: ${designStyle}.
+        Colors: ${colorScheme || "professional color palette"}.
+        ${extraDetails}
+      `.replace(/\n\s+/g, " ").trim()
+
       const response = await fetch("/api/generate-logo", {
         method: "POST",
         headers: {
@@ -51,53 +47,68 @@ const GenerateLogo: React.FC = () => {
         },
         body: JSON.stringify({
           prompt: basePrompt,
-          seed: seed,
+          seed,
           width: 512,
           height: 512,
-          steps: 4
         }),
-      });
-      if (response.status === 403) {
-        router.push('/plans')
-        return
-      }
+      })
+
+      const data = await response.json()
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to generate logo");
+        throw new Error(
+          data.error?.details || 
+          data.error?.message || 
+          "Failed to generate logo. Please try again."
+        )
       }
-  
-      const data = await response.json();
-      setLogoData(data);
+
+      if (!data.imageUrl) {
+        throw new Error("No image URL returned from server")
+      }
+
+      setLogoData({
+        imageUrl: data.imageUrl,
+        seed: data.seed
+      })
+      setCredits(data.creditsRemaining)
+      setGenerationCount(prev => prev + 1)
     } catch (error) {
-      console.error("Error generating logo:", error);
-      setError(error.message || "Failed to generate logo. Please try again.");
+      console.error("Logo generation error:", error)
+      setError(error.message)
+      if (error.message.includes('credits')) {
+        router.push('/plans')
+      }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-  const handleDownload = () => {
-    if (!logoData?.image) return;
-    
-    const link = document.createElement('a');
-    link.href = logoData.image;
-    link.download = `${companyName || "business-logo"}-v${generationCount}-seed-${logoData.seed}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
   }
 
+  const handleDownload = () => {
+    if (!logoData?.imageUrl) return
+    
+    fetch(logoData.imageUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${companyName || "logo"}-v${generationCount}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      })
+      .catch(err => {
+        console.error("Download error:", err)
+        setError("Failed to download image")
+      })
+  }
   return (
     <div className="min-h-screen w-full bg-gray-50 dark:bg-black transition-colors duration-200">
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
-        {/* Header */}
-       
         {/* Input Form */}
-        <div className="bg-white dark:bg-black rounded-xl shadow-md p-6 mb-6">
+<div className="bg-white dark:bg-black rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200 mb-4">
             Business Logo Details
           </h2>
@@ -213,7 +224,6 @@ const GenerateLogo: React.FC = () => {
             </button>
           </div>
         </div>
-
         {/* Preview Section */}
         <div className="bg-white dark:bg-black rounded-xl shadow-md p-6">
           <div className="flex justify-between items-center mb-4">
@@ -239,30 +249,30 @@ const GenerateLogo: React.FC = () => {
                   ))}
                 </div>
                 <img
-                  src={logoData.image}
+                  src={logoData.imageUrl}  // Changed to imageUrl
                   alt={`Professional logo for ${companyName || "your business"}`}
                   className="max-w-full max-h-[300px] object-contain"
+                  onError={() => setError("Failed to load logo image")}
                 />
               </div>
 
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={handleGenerateLogo}
-                  disabled={loading}
+                  disabled={loading || (credits !== null && credits <= 0)}
                   className="flex-1 py-2 px-3 bg-gray-200 dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition-colors flex items-center justify-center"
                 >
                   <RefreshCw className="mr-2" size={18} />
                   Generate Alternative
                 </button>
 
-                <a
-                  href={logoData.image}
-                  download={`${companyName || "business-logo"}-v${generationCount}-seed-${logoData.seed}.png`}
+                <button
+                  onClick={handleDownload}
                   className="flex-1 py-2 px-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                 >
                   <Download className="mr-2" size={18} />
                   Download Logo
-                </a>
+                </button>
               </div>
             </div>
           ) : (
@@ -273,6 +283,11 @@ const GenerateLogo: React.FC = () => {
               <p className="text-gray-500 dark:text-gray-400 text-center">
                 {loading ? "Creating your professional logo..." : "Your business logo will appear here"}
               </p>
+              {credits !== null && credits <= 0 && (
+                <p className="text-red-500 dark:text-red-400 text-sm mt-2">
+                  You have no credits remaining. Please purchase more to generate logos.
+                </p>
+              )}
             </div>
           )}
         </div>
