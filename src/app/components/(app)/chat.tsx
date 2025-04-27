@@ -197,11 +197,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   }
 
   useEffect(() => {
-    console.log(messages)
-    scrollRef.current?.scrollIntoView({ behavior: 'instant' })
-  }, [messages])
-
-  useEffect(() => {
     async function getConversation(id: string) {
       if (!id) return
 
