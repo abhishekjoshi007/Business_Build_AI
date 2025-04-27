@@ -8,7 +8,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useSession } from "next-auth/react"
-
+import { useRef } from "react"
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ")
 }
@@ -60,7 +60,29 @@ export default function NavBar() {
   const handleMobileDropdownToggle = (name: string) => {
     setMobileOpenDropdown((prev) => (prev === name ? null : name))
   }
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  const handleMouseEnter = (itemName: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    setOpenDropdown(itemName)
+  }
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null)
+    }, 150) // Small delay before closing for better UX
+  }
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
   return (
     <Disclosure as="nav" className="bg-nav-activeLight dark:bg-black">
       {({ open, close }) => (
@@ -95,74 +117,78 @@ export default function NavBar() {
                 <div className="hidden md:flex sm:ml-6 items-center">
                   {/* Main navigation */}
                   <div className="flex space-x-1 md:space-x-4 items-center">
-                    {mainNavigation.map((item) => (
-                      <div key={item.name} className="relative">
-                        {item.hasDropdown ? (
-                          <div>
-                            <button
-                              onClick={() => handleDropdownToggle(item.name)}
-                              className={classNames(
-                                pathname === item.href
-                                  ? theme === "dark"
-                                    ? "bg-[#393E46] text-[#EEEEEE]"
-                                    : "bg-[#00ADB5] text-[#222831]"
-                                  : theme === "dark"
-                                    ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
-                                    : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                                "rounded-md px-2 md:px-3 py-2 text-xs md:text-sm font-medium h-full flex items-center",
-                              )}
-                            >
-                              {item.name}
-                              <IconChevronDown className="ml-1 h-4 w-4" />
-                            </button>
-                            {openDropdown === item.name && (
-                              <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10">
-                                <div className="py-1">
-                                  {item.dropdownItems?.map((dropdownItem) => (
-                                    <Link
-                                      key={dropdownItem.name}
-                                      href={dropdownItem.href}
-                                      className={classNames(
-                                        pathname === dropdownItem.href
-                                          ? theme === "dark"
-                                            ? "bg-[#393E46] text-[#EEEEEE]"
-                                            : "bg-[#00ADB5] text-[#222831]"
-                                          : theme === "dark"
-                                            ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
-                                            : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                                        "block px-4 py-2 text-sm",
-                                      )}
-                                      onClick={() => close()} // Close the menu after clicking
-                                    >
-                                      {dropdownItem.name}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <Link
-                            href={item.href}
-                            className={classNames(
-                              pathname === item.href
-                                ? theme === "dark"
-                                  ? "bg-[#393E46] text-[#EEEEEE]"
-                                  : "bg-[#00ADB5] text-[#222831]"
-                                : theme === "dark"
-                                  ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
-                                  : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
-                              "block rounded-md px-2 md:px-3 py-2 text-xs md:text-sm font-medium h-full",
-                            )}
-                            aria-current={pathname === item.href ? "page" : undefined}
-                            onClick={() => close()} // Close the menu after clicking
-                          >
-                            {item.name}
-                          </Link>
+      {mainNavigation.map((item) => (
+        <div
+          key={item.name}
+          className="relative"
+          onMouseEnter={() => item.hasDropdown && handleMouseEnter(item.name)}
+          onMouseLeave={handleMouseLeave}
+        >
+          {item.hasDropdown ? (
+            <div>
+              <button
+                className={classNames(
+                  pathname === item.href
+                    ? theme === "dark"
+                      ? "bg-[#393E46] text-[#EEEEEE]"
+                      : "bg-[#00ADB5] text-[#222831]"
+                    : theme === "dark"
+                      ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
+                      : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
+                  "rounded-md px-2 md:px-3 py-2 text-xs md:text-sm font-medium h-full flex items-center",
+                )}
+              >
+                {item.name}
+                <IconChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {openDropdown === item.name && (
+                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10 transition-opacity duration-200 ease-in-out">
+                  <div className="py-1">
+                    {item.dropdownItems?.map((dropdownItem) => (
+                      <Link
+                        key={dropdownItem.name}
+                        href={dropdownItem.href}
+                        className={classNames(
+                          pathname === dropdownItem.href
+                            ? theme === "dark"
+                              ? "bg-[#393E46] text-[#EEEEEE]"
+                              : "bg-[#00ADB5] text-[#222831]"
+                            : theme === "dark"
+                              ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
+                              : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
+                          "block px-4 py-2 text-sm",
                         )}
-                      </div>
+                        onClick={() => close && close()} // Close the menu after clicking
+                      >
+                        {dropdownItem.name}
+                      </Link>
                     ))}
                   </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              href={item.href}
+              className={classNames(
+                pathname === item.href
+                  ? theme === "dark"
+                    ? "bg-[#393E46] text-[#EEEEEE]"
+                    : "bg-[#00ADB5] text-[#222831]"
+                  : theme === "dark"
+                    ? "text-[#D1D5DB] hover:bg-[#374151] hover:text-[#F9FAFB]"
+                    : "text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]",
+                "block rounded-md px-2 md:px-3 py-2 text-xs md:text-sm font-medium h-full",
+              )}
+              aria-current={pathname === item.href ? "page" : undefined}
+              onClick={() => close && close()} // Close the menu after clicking
+            >
+              {item.name}
+            </Link>
+          )}
+        </div>
+      ))}
+    </div>
                 </div>
               </div>
 

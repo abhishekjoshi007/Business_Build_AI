@@ -763,7 +763,7 @@ export default function SiteForm({ id }: SiteProps) {
                   id="testimonial-name"
                   value={siteData.testimonial.name}
                   onChange={(e) =>
-                    handleFieldChange('testimonalName', e.target.value)
+                    handleFieldChange('testimonal.name', e.target.value)
                   }
                   className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
@@ -784,7 +784,7 @@ export default function SiteForm({ id }: SiteProps) {
                   rows={3}
                   value={siteData.testimonial.content}
                   onChange={(e) =>
-                    handleFieldChange('testimonalContent', e.target.value)
+                    handleFieldChange('testimonal.content', e.target.value)
                   }
                   className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
