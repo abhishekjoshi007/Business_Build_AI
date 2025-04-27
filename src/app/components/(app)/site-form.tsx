@@ -6,13 +6,16 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Feature } from '@/old.types/feature'
 import { toast } from 'react-hot-toast'
 import Link from 'next/link'
-
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 export interface SiteProps {
   id: string
 }
 
 export default function SiteForm({ id }: SiteProps) {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
+  const router = useRouter()
+     const { update } = useSession() // Get the update function
 
   const [siteData, setSiteData] = useState({
     colors: {
@@ -100,6 +103,9 @@ export default function SiteForm({ id }: SiteProps) {
       if (!response.ok) {
         console.error('There was an error getting your site: ', data)
         throw new Error('There was an error getting your site.')
+      }
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
       }
       setSite(data.site)
       setSiteData(data.site.content)
@@ -206,7 +212,10 @@ export default function SiteForm({ id }: SiteProps) {
       });
   
       const response = await res.json();
-  
+      if (response.status === 403) {
+        router.push('/plans')
+        return
+      }
       if (!res.ok) {
         toast.error(response.error); // Show error toast if the request fails
         console.error(response);

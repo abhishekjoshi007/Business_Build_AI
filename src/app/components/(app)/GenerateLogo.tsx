@@ -3,13 +3,15 @@ import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Download, Loader2, RefreshCw, Image, Moon, Sun, Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 interface LogoData {
   image: string;
   seed: number;
 }
 
 const GenerateLogo: React.FC = () => {
-  const router = useRouter()
+  const router = useRouter() 
+      const { update } = useSession() // Get the update function
   const { theme, setTheme } = useTheme()
   const [companyName, setCompanyName] = useState("")
   const [industry, setIndustry] = useState("")
@@ -65,7 +67,9 @@ const GenerateLogo: React.FC = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to generate logo");
       }
-  
+      if (response.ok) {
+        await update() // This will refetch the session with updated credits
+      }
       const data = await response.json();
       setLogoData(data);
     } catch (error) {
