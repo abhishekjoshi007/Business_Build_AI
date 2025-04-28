@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate style
-    const validStyles = ['modern', 'classic', 'minimalist', 'bold'];
+    const validStyles = ['modern', 'classic', 'minimalist', 'bold' , 'gradient' , 'elegant'];
     if (!validStyles.includes(style)) {
       return NextResponse.json({ error: 'Invalid card style' }, { status: 400 });
     }

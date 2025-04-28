@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Feature } from '@/old.types/feature'
 import { toast } from 'react-hot-toast'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 export interface SiteProps {
   id: string
@@ -130,8 +130,24 @@ export default function SiteForm({ id }: SiteProps) {
   }
 
   const handleFieldChange = (field: string, value: string) => {
-    setSiteData({ ...siteData, [field]: value })
-  }
+    const keys = field.split('.'); // split 'testimonial.name' -> ['testimonial', 'name']
+    setSiteData((prevData) => {
+      const updatedData = { ...prevData };
+  
+      if (keys.length === 2) {
+        const [parent, child] = keys;
+        updatedData[parent] = {
+          ...updatedData[parent],
+          [child]: value,
+        };
+      } else {
+        updatedData[field] = value;
+      }
+  
+      return updatedData;
+    });
+  };
+  
 
   async function updateSite(e: any) {
     e.preventDefault()
@@ -772,7 +788,7 @@ export default function SiteForm({ id }: SiteProps) {
                   id="testimonial-name"
                   value={siteData.testimonial.name}
                   onChange={(e) =>
-                    handleFieldChange('testimonal.name', e.target.value)
+                    handleFieldChange('testimonial.name', e.target.value)
                   }
                   className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />
@@ -793,7 +809,7 @@ export default function SiteForm({ id }: SiteProps) {
                   rows={3}
                   value={siteData.testimonial.content}
                   onChange={(e) =>
-                    handleFieldChange('testimonal.content', e.target.value)
+                    handleFieldChange('testimonial.content', e.target.value)
                   }
                   className="block w-full rounded-md border-gray-600 dark:border-gray-500 dark:border-0  bg-white/5 py-1.5 text-brand-dark dark:text-brand-light shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 />

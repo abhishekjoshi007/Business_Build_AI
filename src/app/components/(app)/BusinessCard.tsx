@@ -267,7 +267,7 @@ export default function BusinessCardGenerator() {
                     <option value="minimalist">Minimalist</option>
                     <option value="bold">Bold</option>
                     <option value="elegant">Elegant</option>
-                    <option value="vintage">Gradient</option>
+                    <option value="gradient">Gradient</option>
                   </select>
                 </div>
               </div>
